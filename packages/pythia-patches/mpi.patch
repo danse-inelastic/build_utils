@@ -1,0 +1,89 @@
+diff --exclude CVS -u -r -N mpi-old/mpi/LauncherMPICH.py mpi/mpi/LauncherMPICH.py
+--- mpi-old/mpi/LauncherMPICH.py	2005-03-08 08:13:30.000000000 -0800
++++ mpi/mpi/LauncherMPICH.py	2007-02-24 00:20:53.000000000 -0800
+@@ -26,7 +26,7 @@
+         debug = pyre.inventory.bool("debug", default=False)
+         nodegen = pyre.inventory.str("nodegen")
+         extra = pyre.inventory.str("extra")
+-        command = pyre.inventory.str("command", default="mpirun")
++        command = pyre.inventory.str("command", default="mpiexec")
+         python_mpi = pyre.inventory.str("python-mpi", default="`which mpipython.exe`")
+         machinefile = pyre.inventory.str("machinefile", default="mpirun.nodes")
+ 
+@@ -73,7 +73,6 @@
+         args = []
+         args.append(self.inventory.command)
+         args.append(self.inventory.extra)
+-        args.append("-np %d" % nodes)
+ 
+         # use only the specific nodes specified explicitly
+         if nodelist:
+@@ -83,6 +82,8 @@
+             file.close()
+             args.append("-machinefile %s" % machinefile)
+ 
++        args.append("-np %d" % nodes)
++
+         # add the parallel version of the interpreter on the command line
+         args.append(python_mpi)
+ 
+diff --exclude CVS -u -r -N mpi-old/mpimodule/local.def mpi/mpimodule/local.def
+--- mpi-old/mpimodule/local.def	1969-12-31 16:00:00.000000000 -0800
++++ mpi/mpimodule/local.def	2007-02-24 00:20:54.000000000 -0800
+@@ -0,0 +1,6 @@
++
++EXTERNAL_DEFINES += MPICH_SKIP_MPICXX
++
++EXTERNAL_INCLUDES += $(MPI_INCDIR)
++EXTERNAL_LIBS += -L$(MPI_LIBDIR)  -lmpich
++
+diff --exclude CVS -u -r -N mpi-old/mpimodule/Make.mm mpi/mpimodule/Make.mm
+--- mpi-old/mpimodule/Make.mm	2005-03-08 08:13:30.000000000 -0800
++++ mpi/mpimodule/Make.mm	2007-02-24 00:20:53.000000000 -0800
+@@ -16,6 +16,7 @@
+ MODULE = _mpi
+ 
+ include std-pythonmodule.def
++include local.def
+ 
+ PROJ_CXX_SRCLIB = -ljournal
+ 
+diff --exclude CVS -u -r -N mpi-old/mpipython/local.def mpi/mpipython/local.def
+--- mpi-old/mpipython/local.def	2005-03-08 08:13:30.000000000 -0800
++++ mpi/mpipython/local.def	2007-02-24 00:20:54.000000000 -0800
+@@ -13,9 +13,13 @@
+ 
+ # Python
+     include Python/default.def
++EXTERNAL_INCLUDES += $(MPI_INCDIR)
++EXTERNAL_LIBS += -L$(MPI_LIBDIR) -lmpich -lrt
+ 
+ # C++
+ 
++EXTERNAL_DEFINES += MPICH_SKIP_MPICXX
++
+     PROJ_LCXX_FLAGS = $(COMPILER_LCXX_FORSHARED) $(PLATFORM_PAREXE_FLAGS)
+ 
+ ifeq (AIX,$(findstring AIX,$(PLATFORM_ID)))
+diff --exclude CVS -u -r -N mpi-old/tests/cmd mpi/tests/cmd
+--- mpi-old/tests/cmd	1969-12-31 16:00:00.000000000 -0800
++++ mpi/tests/cmd	2007-02-24 00:20:55.000000000 -0800
+@@ -0,0 +1,5 @@
++$ rsh n01 mpdboot -n 5 -f mpd.hosts -r rsh
++$ rsh n01 mpdtrace
++
++$ rsh -. n01 ". ~/.profile && . ~/.tools && ./simple.py --launcher.nodelist=1,5-6 --launcher.nodegen='n%02d:1' --launcher.command=mpiexec"
++
+diff --exclude CVS -u -r -N mpi-old/tests/mpirun.nodes mpi/tests/mpirun.nodes
+--- mpi-old/tests/mpirun.nodes	1969-12-31 16:00:00.000000000 -0800
++++ mpi/tests/mpirun.nodes	2007-02-24 00:20:55.000000000 -0800
+@@ -0,0 +1,3 @@
++n01:1
++n05:1
++n06:1
+diff --exclude CVS -u -r -N mpi-old/tests/mypg mpi/tests/mypg
+--- mpi-old/tests/mypg	1969-12-31 16:00:00.000000000 -0800
++++ mpi/tests/mypg	2007-02-24 00:20:55.000000000 -0800
+@@ -0,0 +1,2 @@
++n00 0 simple.py
++n01 1 simple.py

@@ -1,0 +1,12 @@
+19,20c19,20
+< elif os.name == 'nt':
+<     from FileLockingNT import FileLockingNT as FileLocking
+---
+> #elif os.name == 'nt':
+> #    from FileLockingNT import FileLockingNT as FileLocking
+30a31,35
+>         
+>         LOCK_EX = 0
+>         LOCK_SH = 0
+>         LOCK_NB = 0
+> 

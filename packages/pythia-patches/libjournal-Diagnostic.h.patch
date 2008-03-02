@@ -1,0 +1,8 @@
+28c28
+< inline journal::Diagnostic & operator<< (journal::Diagnostic &, item_t);
+---
+> inline journal::Diagnostic & operator<< (journal::Diagnostic &, const item_t &);
+65c65
+<     inline Diagnostic & inject(item_t datum);
+---
+>     inline Diagnostic & inject(const item_t  &datum);

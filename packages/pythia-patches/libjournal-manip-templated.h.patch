@@ -1,0 +1,12 @@
+53c53
+<     ::operator<< <> (journal::Diagnostic &, journal::manip_1<arg1_t>);
+---
+>     ::operator<< <arg1_t> (journal::Diagnostic &, journal::manip_1<arg1_t>);
+76c76
+<     ::operator<< <> (journal::Diagnostic &, journal::manip_2<arg1_t, arg2_t>);
+---
+>     ::operator<< <arg1_t, arg2_t> (journal::Diagnostic &, journal::manip_2<arg1_t, arg2_t>);
+100c100
+<     ::operator<< <> (journal::Diagnostic &, journal::manip_3<arg1_t, arg2_t, arg3_t>);
+---
+>     ::operator<< <arg1_t, arg2_t, arg3_t> (journal::Diagnostic &, journal::manip_3<arg1_t, arg2_t, arg3_t>);

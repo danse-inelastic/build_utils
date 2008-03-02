@@ -1,0 +1,82 @@
+#!/usr/bin/env python
+
+def preparePackage( package, sourceRoot = "." ):
+    package.changeRoot( sourceRoot )
+    
+    #--------------------------------------------------------
+    # now add subpackage journal
+    #
+    #journal
+    package.addPurePython(
+        sourceDir = 'packages/journal/journal',
+        destModuleName = 'journal' )
+
+    #lib
+    package.addCLib(
+        libName = 'journal',
+        libDir = 'packages/journal/libjournal',
+        linkArgs = [] )
+
+    #module
+    package.addBinding(
+        moduleDir = 'packages/journal/journalmodule',
+        libs = ['journal'], libdirs = [],
+        dest = 'journal._journal' )
+
+
+
+    #--------------------------------------------------------
+    # now add subpackage pyre
+    #
+    #pyre
+    create_prefix_py()
+    package.addPurePython(
+        sourceDir = 'packages/pyre/pyre',
+        destModuleName = 'pyre' )
+
+    #lib
+    package.addCLib(
+        libName = 'pyre',
+        libDir = 'packages/pyre/libpyre',
+        linkArgs = [] )
+
+    #module
+    package.addBinding(
+        moduleDir = 'packages/pyre/pyremodule',
+        libs = ['journal'],
+        dest = 'pyre._pyre' )
+
+    return package
+
+
+def create_prefix_py():
+    #copied from pythia/packages/pyre/pyre/inventory/odb
+    #distutils_adpt.install python module will create
+    #a install_info.py containing installing scheme
+    #we want to make use of that information
+    text = """
+import os
+from install_info import etc
+
+_SYSTEM_ROOT = etc
+_USER_ROOT = os.path.join(os.path.expanduser('~'), '.pyre')
+_LOCAL_ROOT = [ '.' ]
+""" 
+    import os
+    cwd = os.path.split( __file__ )[0]
+    odb = os.path.join( cwd, "packages", "pyre", "pyre", "inventory", "odb")
+    dest = os.path.join( odb, "prefix.py" )
+    open(dest, 'w').write( text )
+    return
+    
+
+if __name__ == "__main__":
+    #------------------------------------------------------------
+    #init the package
+    from distutils_adpt.Package import Package
+    package = Package('journal', 'pythia0.8')
+
+    preparePackage( package )
+
+    package.setup()
+

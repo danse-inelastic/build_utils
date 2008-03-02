@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+
+def preparePackage( package, sourceRoot = "." ):
+    package.changeRoot( sourceRoot )
+    
+    #--------------------------------------------------------
+    # now add subpackage journal
+    #
+    #journal
+    package.addPurePython(
+        sourceDir = 'packages/journal/journal',
+        destModuleName = 'journal' )
+
+    #lib
+    package.addCLib(
+        libName = 'journal',
+        libDir = 'packages/journal/libjournal',
+        linkArgs = [] )
+
+    #module
+    package.addBinding(
+        moduleDir = 'packages/journal/journalmodule',
+        libs = ['journal'], libdirs = [],
+        dest = 'journal._journal' )
+
+
+
+    #--------------------------------------------------------
+    # now add subpackage pyre
+    #
+    #pyre
+    package.addPurePython(
+        sourceDir = 'packages/pyre/pyre',
+        destModuleName = 'pyre' )
+
+    #lib
+    package.addCLib(
+        libName = 'pyre',
+        libDir = 'packages/pyre/libpyre',
+        linkArgs = [] )
+
+    #module
+    package.addBinding(
+        moduleDir = 'packages/pyre/pyremodule',
+        libs = ['journal'],
+        dest = 'pyre._pyre' )
+
+    return package
+
+
+if __name__ == "__main__":
+    #------------------------------------------------------------
+    #init the package
+    from distutils_adpt.Package import Package
+    package = Package('journal', 'pythia0.8')
+
+    preparePackage( package )
+
+    package.setup()
+

@@ -1,0 +1,8 @@
+42c42
+< journal::Diagnostic & journal::Diagnostic::inject(item_t item) {
+---
+> journal::Diagnostic & journal::Diagnostic::inject(const item_t & item) {
+49c49
+< journal::Diagnostic & operator<< (journal::Diagnostic & diagnostic, item_t item) {
+---
+> journal::Diagnostic & operator<< (journal::Diagnostic & diagnostic, const item_t & item) {
