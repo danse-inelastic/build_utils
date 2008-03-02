@@ -41,6 +41,8 @@ def run( projectname, src_root, export_root, build_root, config_dir):
           % {'dottools': dottools}
 
     if os.system( cmd ): raise RuntimeError , "%s failed" % cmd
+
+    os.chdir( pwd )
     return
 
 

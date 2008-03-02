@@ -47,6 +47,8 @@ def build_release(
     
     import build
     build.run( release.name, src_root, export_root, build_root, config_dir)
+
+    clean_up( export_root )
     return
 
 
@@ -57,8 +59,9 @@ def clean_up( export_root ):
 
 
 def prune( path, pattern ):
-    cmd = 'find "%s" "%s" -exec rm -rf {} \;' % (
+    cmd = r'find "%s" -name "%s" -exec rm -rf {} \;' % (
         path, pattern )
+    print "running %r..." % cmd
     os.system( cmd )
     return
 
