@@ -40,13 +40,14 @@ def render(path, project):
     dirs = ''.join( ['\t%s \\\n' % dir for dir in dirs] )
     d['directories'] = dirs
     
-    path = os.path.abspath( __file__ )
-    path = os.path.dirname( path )
+    pwd = os.path.abspath( __file__ )
+    pwd = os.path.dirname( pwd )
 
-    fmtstr = open( os.path.join( path, 'Make.mm.template' ) ).read()
+    fmtstr = open( os.path.join( pwd, 'Make.mm.template' ) ).read()
     s = fmtstr % d
 
-    open( os.path.join( path, 'Make.mm' ), 'w' ).write( s )
+    f = os.path.join( path, 'Make.mm' )
+    open( f, 'w' ).write( s )
     return
 
 
