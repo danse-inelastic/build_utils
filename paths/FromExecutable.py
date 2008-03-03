@@ -37,7 +37,7 @@ class PathsFinder(base):
     }
     """
 
-    mechanism = "search paths of a package by Mike Mckerns' infect/utils.py"
+    mechanism = "search paths of a package by looking for executables"
 
     scheme = {'root': '.',
               'c headers': 'include',

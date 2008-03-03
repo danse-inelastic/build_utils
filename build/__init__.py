@@ -44,9 +44,19 @@ def build_release(
 
     if build_root is None: build_root = os.path.join(
         tmp, 'build' )
-    
+
     import build
-    build.run( release.name, src_root, export_root, build_root, config_dir)
+    succeeded = False
+    while not succeeded:
+        try:
+            build.run( release.name, src_root, export_root, build_root, config_dir)
+            succeeded = True
+        except build.DependencyMissing, dep:
+            print "Trying to install dependency %r ..." % dep
+            from deps import install
+            install( str(dep) )
+            pass
+        continue
 
     clean_up( export_root )
     return
@@ -67,6 +77,7 @@ def prune( path, pattern ):
 
 
 import sys, os
+import utils.installers
 
 
 

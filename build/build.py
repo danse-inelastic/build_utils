@@ -46,7 +46,7 @@ def run( projectname, src_root, export_root, build_root, config_dir):
     return
 
 
-
+from generate_dottools import DependencyMissing
 
 # version
 __id__ = "$Id$"

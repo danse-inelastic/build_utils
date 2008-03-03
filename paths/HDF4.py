@@ -1,9 +1,9 @@
 """
-handle paths for HDF5 package
+handle paths for HDF4 package
 """
 
-name = 'HDF5'
-description = 'NCSA Hierarchiacal Data Format'
+name = 'HDF4'
+description = 'NCSA Hierarchiacal Data Format version 4'
 
 from FromEnvVariables import PathsFinder as _EnvPFBase
 
@@ -18,11 +18,11 @@ class PathsFinder(_EnvPFBase):
     pass # end of PathsFinder
 
 
-fromEnvVars = PathsFinder( name, description, hints = "HDF5" )
+fromEnvVars = PathsFinder( name, description, hints = "HDF4" )
 
 
 from FromExecutable import PathsFinder
-fromExe = PathsFinder( name, description, hints = {"executable": "h5cc"} )
+fromExe = PathsFinder( name, description, hints = {"executable": "h4cc"} )
 
 toolset  = [fromEnvVars,
             fromExe,]

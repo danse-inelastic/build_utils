@@ -11,18 +11,17 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 def render( paths ):
-    name = paths.name
-    try:
-        exec "import %s as module" % name
-    except ImportError:
-        raise NotImplementedError, name
-    try: render = getattr(module, 'render')
-    except AttributeError:
-        raise NotImplementedError, name
-    return render( paths )
-    
+    root = paths.root
+    libdir = paths.clibs[0]
+    incdir = paths.includes[0]
+    lines = [
+        "export HDF5_DIR='%s'" % root,
+        "export HDF5_LIBDIR='%s'" % libdir,
+        "export HDF5_INCDIR='%s'" % incdir,
+        ]
+    return lines
+        
 
 # version
 __id__ = "$Id$"

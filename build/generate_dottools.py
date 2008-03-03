@@ -14,18 +14,11 @@
 # make-dottools.py <directory>
 
 
-def main():
-    import sys
-    path = sys.argv[0]
-    render( path )
-    return
-    
-
 def render( path, export_root, build_root, config_dir ):
     import os
     
-    from deps import externPackageInfo as info
-    dependencies = ['Python'] + info.keys()
+    from deps import packages
+    dependencies = ['Python'] + packages
 
     path = os.path.join( path, 'dottools' )
     from utils.mm.dottools_factory import render_file
@@ -35,7 +28,7 @@ def render( path, export_root, build_root, config_dir ):
     return path
 
 
-if __name__ == '__main__': main()
+from utils.mm.dottools_factory import DependencyMissing
 
 
 # version

@@ -7,7 +7,7 @@ def getEnv( env_variable, default, description = None):
         variable = environ[env_variable]
     except KeyError:
         if not default:
-            raise RuntimeError,'** Please set environment variable %s, which is %s.' % (env_variable, description)
+            raise RuntimeError,'Environment variable %r is not set. The variable should be %r.' % (env_variable, description)
         print "** warning: environment variable %s, which is the %s, is not found. It is set to default value %s" % (env_variable, description, default)
         variable = default
     return variable

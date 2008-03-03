@@ -9,10 +9,12 @@ def checkoutCmd( repo, name, branch ):
         "svn co -N %s/%s" % ( repo, name ),
         "cd %s" % name,
         ]
-    for p in branch.split( '/' ):
-        cmd = "svn up %s && cd %s" % (p, p)
+    leaves = branch.split( '/' )
+    for p in leaves[:-1]:
+        cmd = "svn up -N %s && cd %s" % (p, p)
         cmds.append( cmd )
         continue
+    cmds.append( 'svn up %s' % leaves[-1] )
 
     return ' && '.join( cmds )
 

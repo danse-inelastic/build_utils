@@ -21,6 +21,9 @@ def render_file( path, dependencies,
     return
 
 
+class DependencyMissing(Exception): pass
+
+
 class Factory:
 
     def __init__(self,
@@ -48,13 +51,19 @@ class Factory:
 
         lines = header
         for dep in dependencies:
-            lines += dottools.render_dependency( dep )
+            try:
+                print "rendering .tools codes for %r ..." % dep
+                lines += dottools.render_dependency( dep )
+            except InstallationNotFound, err:
+                print err.__class__.__name__, err
+                raise DependencyMissing, dep
             continue
         return lines
         
     pass # end of Factory
 
 
+from utils.paths.InstallationNotFound import InstallationNotFound
 
 # version
 __id__ = "$Id$"

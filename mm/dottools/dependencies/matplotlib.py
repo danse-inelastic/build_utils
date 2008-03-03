@@ -11,18 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 def render( paths ):
-    name = paths.name
-    try:
-        exec "import %s as module" % name
-    except ImportError:
-        raise NotImplementedError, name
-    try: render = getattr(module, 'render')
-    except AttributeError:
-        raise NotImplementedError, name
-    return render( paths )
-    
+    return []
+        
 
 # version
 __id__ = "$Id$"
