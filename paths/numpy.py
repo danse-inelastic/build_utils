@@ -9,7 +9,7 @@ description = 'numerical python'
 from InstallationNotFound import InstallationNotFound
 
 try:
-    import numpy
+    numpy = __import__('numpy', {}, {}, [] )
 except ImportError:
     raise InstallationNotFound, "numpy"
 

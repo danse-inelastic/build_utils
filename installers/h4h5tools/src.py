@@ -5,7 +5,7 @@ def get( version = None, **kwds ):
     if version is None: version = "1.2"
     cmds = [
         'CC=%s/bin/h4cc ./configure --prefix=%s --with-hdf5=%s' % (
-        install_path, install_path, install_path )
+        install_path, install_path, install_path ),
         'make',
         'make install',
         ]

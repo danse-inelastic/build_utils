@@ -40,9 +40,9 @@ sys.path = [os.path.join(install_path, 'python')] + sys.path
 os.environ['PATH'] = '%s:%s' % (
     os.path.join( install_path, 'bin' ), os.environ['PATH'] )
 os.environ['LD_LIBRARY_PATH'] = '%s:%s' % (
-    os.path.join( install_path, 'lib' ), os.environ['LD_LIBRARY_PATH'] )
+    os.path.join( install_path, 'lib' ), os.environ.get('LD_LIBRARY_PATH') or '' )
 os.environ['DYLD_LIBRARY_PATH'] = '%s:%s' % (
-    os.path.join( install_path, 'lib' ), os.environ['DYLD_LIBRARY_PATH'] )
+    os.path.join( install_path, 'lib' ), os.environ.get('DYLD_LIBRARY_PATH') or '' )
 
 
 def execute( cmd ):

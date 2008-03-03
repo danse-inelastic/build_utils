@@ -33,7 +33,8 @@ def render(path, project):
     table = packages.packageInfoTable
 
     dirs = []
-    for name, info in table.iteritems():
+    for name in packages.packageNames:
+        info = table[name]
         dirs.append( info['path'] )
         continue
 
