@@ -37,7 +37,7 @@ def run( projectname, src_root, export_root, build_root, config_dir):
     pwd = os.path.abspath( os.curdir )
     os.chdir( src_root )
 
-    cmd = "sh -c 'source %(dottools)r  && mm'"\
+    cmd = "sh -c '. %(dottools)r  && mm'"\
           % {'dottools': dottools}
 
     if os.system( cmd ): raise RuntimeError , "%s failed" % cmd
