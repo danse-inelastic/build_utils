@@ -62,8 +62,7 @@ def build_release(
     return
 
 
-def clean_up( export_root ):
-    patterns = [ '.svn', 'CVS', '.pyc' ]
+def clean_up( export_root, patterns = [ '.svn', 'CVS', '.pyc' ] ):
     for pattern in patterns: prune( export_root, pattern )
     return
 
