@@ -33,8 +33,9 @@ export PYTHONPATH=$root/modules:$deps/python:$PYTHONPATH
 
 def build_envs_sh( target ):
     "build envs.sh on target's bin directory"
-    s = fmtstr % target
     import os
+    target = os.path.abspath( target )
+    s = fmtstr % target
     f = os.path.join( target, 'bin', 'envs.sh' )
     open(f, 'w').write(s )
     return
