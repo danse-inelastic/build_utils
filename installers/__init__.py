@@ -45,11 +45,8 @@ os.environ['DYLD_LIBRARY_PATH'] = '%s:%s' % (
     os.path.join( install_path, 'lib' ), os.environ.get('DYLD_LIBRARY_PATH') or '' )
 
 
-def execute( cmd ):
-    'execute a shell command'
-    print 'executing %r... ' % cmd
-    if os.system(cmd) : raise RuntimeError , "%r failed" % cmd
-    return
+
+from utils.unixshell import execute
 
 
 # version
