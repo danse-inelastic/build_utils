@@ -1,8 +1,6 @@
 
-setupScript = 'setup_sampleassembly'
 name = 'sampleassembly'
-sub_modules = None
-deps = [] 
+deps = ['instrument'] 
 
 import repoutils
 reponame = 'common'

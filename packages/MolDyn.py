@@ -1,8 +1,8 @@
 
-name = 'instrument'
-deps = ['pythia',]
+name = 'MolDyn'
+deps = [] 
 
 import repoutils
 reponame = name
-branch = "trunk"
+branch = "molDynamics"
 path, checkoutCmd, updateCmd = repoutils.svn.repoinfo( reponame, branch )
