@@ -35,6 +35,10 @@ install_path = os.path.join( releaser_root, 'EXPORT', 'deps' )
 #allow access to installed python package
 import sys
 sys.path = [os.path.join(install_path, 'python')] + sys.path
+os.environ['PYTHONPATH'] = '%s:%s' % (
+    os.path.join(install_path, 'python'), os.environ.get('PYTHONPATH') or '' )
+import easy_install_support
+easy_install_support.import_site()
 
 #bash only. bad hack...
 os.environ['PATH'] = '%s:%s' % (
@@ -43,7 +47,6 @@ os.environ['LD_LIBRARY_PATH'] = '%s:%s' % (
     os.path.join( install_path, 'lib' ), os.environ.get('LD_LIBRARY_PATH') or '' )
 os.environ['DYLD_LIBRARY_PATH'] = '%s:%s' % (
     os.path.join( install_path, 'lib' ), os.environ.get('DYLD_LIBRARY_PATH') or '' )
-
 
 
 from utils.unixshell import execute
