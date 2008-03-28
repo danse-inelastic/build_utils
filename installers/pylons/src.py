@@ -20,11 +20,24 @@ def get( version = None, **kwds ):
     cmds = [
         'cd %s' % tarball_path,
         'wget %s/ez_setup.py' % server,
+        ]
+
+    if version == '0.9.4':
+        cmds.append(
+            'PYTHONPATH=%(pref)s/python:$PYTHONPATH python ez_setup.py --prefix=%(pref)s  --install-dir=%(pref)s/python Beaker==0.7.5' % {
+            'pref': install_path,
+            'version': version,
+            }
+            )
+        pass # end if version == '0.9.4'
+
+    cmds.append(
         'PYTHONPATH=%(pref)s/python:$PYTHONPATH python ez_setup.py --prefix=%(pref)s  --install-dir=%(pref)s/python Pylons==%(version)s' % {
         'pref': install_path,
         'version': version,
-        },
-        ]
+        }
+        )
+
 	
     def _(): 
         execute( ";".join(cmds) )
