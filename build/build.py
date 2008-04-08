@@ -15,7 +15,8 @@
 # in PYTHONPATH
 
 
-def run( projectname, src_root, export_root, build_root, config_dir):
+def run( projectname, src_root, export_root, build_root, config_dir,
+         arguments = []):
     '''
     tmp_root: temporary directory
     src_root: root of sources where Make.mm will be put and mm will be run
@@ -32,19 +33,35 @@ def run( projectname, src_root, export_root, build_root, config_dir):
     import generate_dottools
     dottools = generate_dottools.render(
         src_root, export_root, build_root, config_dir )
-    
+
+    # create directories
     if not os.path.exists( build_root ): os.makedirs( build_root )
-    pwd = os.path.abspath( os.curdir )
-    os.chdir( src_root )
 
-    cmd = "sh -c '. %(dottools)r  && mm'"\
-          % {'dottools': dottools}
-
-    if os.system( cmd ): raise RuntimeError , "%s failed" % cmd
-
-    os.chdir( pwd )
+    # run mm
+    runmm( src_root, dottools, arguments = arguments )
     return
 
+
+def runmm( path, dottools, arguments = []):
+    cmd = "sh -c '. %(dottools)r && mm %(args)s'" % {
+        'dottools': dottools,
+        'args': ' '.join( arguments ),
+        }
+    # save current directory
+    import os
+    pwd = os.path.abspath( os.curdir )
+    
+    # change to build dir
+    os.chdir( path )
+
+    # run
+    if os.system(cmd): raise RuntimeError , "%s failed" % cmd
+
+    # change back to original directory
+    os.chdir( pwd )
+
+    return
+    
 
 from generate_dottools import DependencyMissing
 

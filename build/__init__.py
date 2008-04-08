@@ -12,44 +12,62 @@
 #
 
 
-def build_release(
-    releaser_root,
-    tmp = None,
-    export_root = None, src_root = None,
-    build_root = None,
-    ):
-
-    '''build a release
-
-    releaser_root: root directory of releaser
-    tmp: tmporary path. usually $releaser_root/tmp
-    export_root: root where binaries and python modules to be exported. usually $releaser_root/EXPORT
-    src_root: path to the sources. usually $releaser_root/sr
-    '''
-    
-    if tmp is None: tmp = os.path.join(  releaser_root, 'tmp' )
-    if export_root is None: export_root = os.path.join( releaser_root, 'EXPORT' )
-    if src_root is None: src_root = os.path.join( releaser_root, 'src' )
-
+def get_release():
     #get release info
     import release
     
     if release.identifier == "":
-        print "$0 <name-of-release>"
-        sys.exit(2)
-        raise 
+        raise RuntimeError, "release identifier not specified"
 
+    return release
+
+
+def build_release(releaser_root):
+    'build a release'
+    release = get_release()
+    return _build( release, build_dirs( releaser_root ) )
+
+
+def build_docs(releaser_root):
+    'build a release'
+    release = get_release()
+    return _build( release, build_dirs( releaser_root ), args = ['docs'] )
+
+
+def build_dirs( root, tmp = None, export = None, src = None, build = None ):
+    '''create a data object to hold directories related to a build
+    
+    root: root directory of releaser
+    tmp: tmporary path. usually $root/tmp
+    export: root where binaries and python modules to be exported. usually $root/EXPORT
+    src: path to the sources. usually $root/src
+    '''
+    if export is None: export = os.path.join( root, 'EXPORT' )
+    if src is None: src = os.path.join( root, 'src' )
+    if tmp is None: tmp = os.path.join(  root, 'tmp' )
+    if build is None: build = os.path.join(tmp, 'build' )
+
+    from BuildDirs import BuildDirs
+    return BuildDirs( root, src, export, build, tmp)
+
+
+def _build(release, builddirs, args = []):
+    '''build
+
+    builddirs: directories of the build (instance of BuildDirs)
+    '''
+    
     from packages import packageInfoTable
-    config_dir = os.path.join( src_root, packageInfoTable['config']['path'] )
-
-    if build_root is None: build_root = os.path.join(
-        tmp, 'build' )
+    config_dir = os.path.join( builddirs.src, packageInfoTable['config']['path'] )
 
     import build
     succeeded = False
     while not succeeded:
         try:
-            build.run( release.name, src_root, export_root, build_root, config_dir)
+            build.run(
+                release.name, builddirs.src, builddirs.export,
+                builddirs.build, config_dir,
+                arguments = args)
             succeeded = True
         except build.DependencyMissing, dep:
             print "Trying to install dependency %r ..." % dep
@@ -58,7 +76,7 @@ def build_release(
             pass
         continue
 
-    clean_up( export_root )
+    clean_up( builddirs.export )
     return
 
 
