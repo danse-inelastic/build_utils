@@ -1,8 +1,4 @@
-
-
-setupScript = 'setup_numpyext'
 name = 'numpyext'
-sub_modules = None
 deps = []
 #'boostpython'
 #'scipy'
