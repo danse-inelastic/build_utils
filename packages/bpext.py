@@ -1,8 +1,5 @@
 
-
-setupScript = 'setup_bpext'
 name = 'bpext'
-sub_modules = None
 deps = []
 #'boostpython'
 #'scipy'

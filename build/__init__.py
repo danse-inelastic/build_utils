@@ -70,7 +70,8 @@ def _build(release, builddirs, args = []):
                 arguments = args)
             succeeded = True
         except build.DependencyMissing, dep:
-            print "Trying to install dependency %r ..." % dep
+            raise
+            print "Trying to install dependency '%s' ..." % dep
             from deps import install
             install( str(dep) )
             pass

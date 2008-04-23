@@ -19,8 +19,12 @@ def get( version = None, **kwds ):
     if version is None: version = "1.0.4"
     cmd = 'python setup.py install --prefix=%s --install-lib=%s/python' % (
         install_path, install_path)
-    def _(): install( name, version, server = server, install_commands = [cmd],
-                      **kwds )
+    def _():
+        return install(
+            name, version,
+            server = server,
+            install_commands = [cmd],
+            **kwds )
     return _
     
 

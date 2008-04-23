@@ -9,8 +9,8 @@ name = "libI77"
 ###we only need the lib directory. so I won't use the complex search tools
 
 
-from distutils_adpt.paths.envUtils import get_usingLib
-from distutils_adpt.paths.shutils import env
+from envUtils import get_usingLib
+from shutils import env
 
 
 libI77_lib_envvar = "LIBI77_LIBDIR"

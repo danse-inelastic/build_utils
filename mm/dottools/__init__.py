@@ -20,7 +20,7 @@ def render_header( target, export_root, build_root, config_dir ):
 
 
 def render_dependency( dep ):
-    exec 'from utils.paths.%s import paths' % dep in locals()
+    paths = getpaths( dep )
     from dependencies import render
     return render(paths)
     
@@ -42,6 +42,36 @@ def render_config_path( config_dir ):
         'export PATH=%s/make:${PATH}' % config_dir,
         'export BLD_CONFIG="%s"' % config_dir,
         ]
+
+
+
+def getpaths( package ):
+    paths = getpathsInInstalledDependencies( package )
+    if paths: return paths
+    return _getpaths( package )
+
+
+def getpathsInInstalledDependencies( package ):
+    '''get paths of a package assuming it is in "deps" directory
+    of this releaser'''
+    var = '%s_DIR' % package.upper()
+    import os
+    save = os.environ.get( var )
+
+    from utils.installers import install_path
+    os.environ[ var ] = install_path
+
+    try: ret = _getpaths( package )
+    except: ret = None
+
+    if save: os.environ[ var ] = save
+    
+    return ret
+
+
+def _getpaths( package ):
+    exec 'from utils.paths.%s import paths' % package in locals()
+    return paths
 
 
 # version
