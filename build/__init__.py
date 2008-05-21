@@ -70,14 +70,52 @@ def _build(release, builddirs, args = []):
                 arguments = args)
             succeeded = True
         except build.DependencyMissing, dep:
+
+            dep = str(dep )
+
             print "Trying to install dependency '%s' ..." % dep
-            from deps import install
-            install( str(dep) )
+
+            # is installer specified?
+            from deps import installers
+            installer = installers.get( dep )
+
+            # use default installer if possible
+            if installer is None:
+                installer = get_installer( dep )
+
+            # install
+            installer()
+                
+            #after installation, we want to make sure installation
+            #is successful. 
+            checkInstallation( dep )
             pass
         continue
 
     clean_up( builddirs.export )
     return
+
+
+def checkInstallation( dep ):
+    from utils.paths import get, InstallationNotFound
+    try: get(dep)
+    except InstallationNotFound:
+        lines = (
+            'Dependency %r was not installed successfully.' % dep,
+            'Sometimes this can be solved by rerun the',
+            'installation or build script',
+            )
+        msg =  ' '.join(lines)
+        print msg
+        import sys
+        sys.exit(1)
+        raise
+    return
+
+
+def get_installer( dep ):
+    from utils.installers import guess
+    return guess( dep )
 
 
 def clean_up( export_root, patterns = [ '.svn', 'CVS', '.pyc' ] ):
