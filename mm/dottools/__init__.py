@@ -69,9 +69,7 @@ def getpathsInInstalledDependencies( package ):
     return ret
 
 
-def _getpaths( package ):
-    exec 'from utils.paths.%s import paths' % package in locals()
-    return paths
+from utils.paths import get as _getpaths
 
 
 # version

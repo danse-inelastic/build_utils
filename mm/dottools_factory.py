@@ -55,7 +55,8 @@ class Factory:
                 print "rendering .tools codes for %r ..." % dep
                 lines += dottools.render_dependency( dep )
             except InstallationNotFound, err:
-                print err.__class__.__name__, err
+                import traceback
+                print traceback.format_exc()
                 raise DependencyMissing, dep
             continue
         return lines
