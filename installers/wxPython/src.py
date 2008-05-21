@@ -13,7 +13,8 @@
 
 
 name = 'wxPython'
-server = 'http://superb-west.dl.sourceforge.net/sourceforge/wxpython'
+#server = 'http://superb-west.dl.sourceforge.net/sourceforge/wxpython'
+server = 'svn://danse.us/buildInelast/external/wxPython/2.8.4.0/src'
 
 def get( version = None, **kwds ):
     if version is None: version = "2.8.4.0"
@@ -24,11 +25,11 @@ def get( version = None, **kwds ):
     cmds = [
         './configure --enable-monolithic --prefix=%s' % install_path,
         'make',
-        'make -C contrib/src/animate',
+        #'make -C contrib/src/animate',
         'make -C contrib/src/gizmos',
         'make -C contrib/src/stc',
         'make install',
-        'make -C contrib/src/animate install',
+        #'make -C contrib/src/animate install',
         'make -C contrib/src/gizmos install',
         'make -C contrib/src/stc install',
         'cd %s' % name,
@@ -42,7 +43,10 @@ def get( version = None, **kwds ):
     
     def _():
         install( name, version,
-                 server = server, install_commands = cmds,
+                 server = server, 
+                 identifier = identifier,
+                 tarball_ext = 'tar.bz2',
+                 install_commands = cmds,
                  **kwds )
         return
     return _

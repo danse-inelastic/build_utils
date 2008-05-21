@@ -2,16 +2,18 @@
 handle paths for numpy
 """
 
-name = 'numpy'
+name = 'py_numpy'
 description = 'numerical python'
 
 
 from InstallationNotFound import InstallationNotFound
 
 try:
-    numpy = __import__('numpy', {}, {}, [] )
-except ImportError:
-    raise InstallationNotFound, "numpy"
+    import numpy
+except ImportError, err:
+    import traceback
+    print traceback.format_exc()
+    raise InstallationNotFound, name
 
 import os
 # numpy is strange because it installs its headers to python directory
