@@ -13,7 +13,7 @@
 
 
 def download_cmd( link ):
-    if link.startswith( 'http:' ):
+    if link.startswith( 'http:' ) or link.startswith( 'ftp:'):
         return [ 'wget %s' % link ]
     elif link.startswith( 'svn:' ):
         return download_using_svn( link )
