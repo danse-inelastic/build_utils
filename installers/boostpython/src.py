@@ -28,12 +28,12 @@ def get( version = None, **kwds ):
     from utils.installers.misc import so
     postinstall_cmds = [
         'cd %s/include' % (install_path,),
-        'ln -s %(name)s-%(version)s/%(name)s %(name)s' % {
+        'ln -s `ls -1|grep boost`/boost %(name)s' % {
         'name': name,
         'version': version,
         },
         'cd %s/lib' % (install_path,),
-        'ln -s libboost_python-%(version)s.%(so)s libboost_python.%(so)s' % {
+        'ln -s `ls -1|grep libboost_python` libboost_python.%(so)s' % {
         'version': version,
         'so': so,
         },
