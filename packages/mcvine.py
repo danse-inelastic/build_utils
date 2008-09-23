@@ -1,6 +1,8 @@
 name = 'mcvine'
-deps = ('dsm', 'numpyext', 'bpext', 'histogram', 'instrument', 'sampleassembly', 'pythia', 
+deps = ('dsm', 'numpyext', 'bpext', 
+        'histogram', 'instrument', 'sampleassembly', 'pythia', 
         'ins_crystal', # temporarily
+        'sansmodels', # optionally
 	)
 
 import repoutils
