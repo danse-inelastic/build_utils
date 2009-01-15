@@ -2,6 +2,8 @@
 handle paths for HDF5 package
 """
 
+from InstallationNotFound import InstallationNotFound
+
 name = 'HDF5'
 description = 'NCSA Hierarchiacal Data Format'
 
@@ -31,3 +33,12 @@ toolset  = [fromEnvVars,
 from search import search
 paths = search(toolset)
 
+# verify 
+# search all include dirs to find hdf5.h
+import os
+found = False
+for directory in paths.includes:
+    if os.path.exists(os.path.join(directory,'hdf5.h')): found=True; break
+    continue
+if not found: 
+    raise InstallationNotFound, name
