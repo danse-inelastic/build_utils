@@ -63,7 +63,7 @@ class PathsFinder(base):
         'python modules': '_PYTHONDIR'}
     
 
-    def extract(self):
+    def _extract(self):
         """
         extract my paths from system environment variables
 

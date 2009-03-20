@@ -7,8 +7,24 @@ from InstallationNotFound import InstallationNotFound
 name = 'HDF5'
 description = 'NCSA Hierarchiacal Data Format'
 
-from FromEnvVariables import PathsFinder as _EnvPFBase
+# validator 
+# search all include dirs to find hdf5.h
+def validator(paths):
+    import os
+    found = False
+    for directory in paths.includes:
+        candidate = os.path.join(directory,'hdf5.h')
+        print "* Looking for %s" % candidate
+        if os.path.exists(candidate): found=True; break
+        print "... not found"
+        continue
+    if not found: 
+        raise RuntimeError, "Cannot find hdf5.h in candidate %s" % paths
+    return
 
+
+
+from FromEnvVariables import PathsFinder as _EnvPFBase
 class PathsFinder(_EnvPFBase):
     import os
     if os.name == "nt":
@@ -18,13 +34,11 @@ class PathsFinder(_EnvPFBase):
                   'python modules': 'python'}
         pass
     pass # end of PathsFinder
-
-
-fromEnvVars = PathsFinder( name, description, hints = "HDF5" )
+fromEnvVars = PathsFinder( name, description, hints = "HDF5", validator=validator) 
 
 
 from FromExecutable import PathsFinder
-fromExe = PathsFinder( name, description, hints = {"executable": "h5cc"} )
+fromExe = PathsFinder( name, description, hints = {"executable": "h5cc"}, validator=validator)
 
 toolset  = [fromEnvVars,
             fromExe,]
@@ -33,12 +47,3 @@ toolset  = [fromEnvVars,
 from search import search
 paths = search(toolset)
 
-# verify 
-# search all include dirs to find hdf5.h
-import os
-found = False
-for directory in paths.includes:
-    if os.path.exists(os.path.join(directory,'hdf5.h')): found=True; break
-    continue
-if not found: 
-    raise InstallationNotFound, name

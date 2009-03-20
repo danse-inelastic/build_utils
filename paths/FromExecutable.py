@@ -45,7 +45,7 @@ class PathsFinder(base):
               'python modules': 'python'}
 
 
-    def extract(self):
+    def _extract(self):
         """
         extract my paths by using infects/utils to search for paths using given signature
 
