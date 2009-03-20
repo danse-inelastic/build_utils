@@ -72,6 +72,10 @@ def _build(release, builddirs, args = []):
         except build.DependencyMissing, dep:
 
             dep = str(dep )
+            
+            if raw_input(" * Install dependency '%s'? (yes/no) " % dep) != 'yes': 
+                print "\nAbort\n"
+                return
 
             print "Trying to install dependency '%s' ..." % dep
 
