@@ -3,7 +3,7 @@
 
 import os, sys
 
-default_server="http://danse.us/releases"
+default_server="http://dev.danse.us/packages"
 
 
 class DownloadError (Exception ): pass
@@ -14,10 +14,14 @@ def download( link, path ):
     localfileheader = 'file://'
     if link.startswith(localfileheader):
         cmd = "cd '%s' && cp %s ." % (path, link[len(localfileheader):])
+        if os.system( cmd ):
+            raise DownloadError, "Failed to download %s" % link
     else:
-        cmd = "cd '%s' && wget --timestamping '%s' &> /dev/null " % (path, link) 
-    if os.system( cmd ):
-        raise DownloadError, "Failed to download %s" % link
+        filename = link[link.rfind('/')+1:]
+        import os
+        filepath = os.path.join(path, filename)
+        fetchurl(link, filepath)
+
     return
 
 
@@ -25,11 +29,18 @@ def expand( tarball, path ):
     f = os.path.join( path, tarball ) 
     if not os.path.exists( f ) :
         raise  IOError , "%s does not exist" % f
-    cmd = "cd '%s' && tar xfz '%s' &> /dev/null && rm -f %s" % (
-        path, tarball, tarball )
+    # save current dir
+    curdir = os.path.abspath(os.curdir)
+    # change to dest path
+    os.chdir(path)
+    # open tar ball and expand
     print " * Expanding %s. This may take a while..." % tarball
-    if os.system( cmd ):
-        raise IOError , "Unable to expand tar ball %s" % f
+    import tarfile
+    tar = tarfile.open(tarball)
+    tar.extractall()
+    tar.close() 
+    # restore
+    os.chdir(curdir)
     return
 
 
@@ -53,6 +64,16 @@ def make_updates( install_root ):
     for f in update_functions: f( install_root )
     return
 
+
+
+def fetchurl(url, path):
+    import sys, urllib
+    #def reporthook(*a): print a
+    def reporthook(*a): sys.stdout.write('.') ; sys.stdout.flush()
+    print url, "->", path
+    urllib.urlretrieve(url, path, reporthook)
+    print
+    return
 
 
 def _update_1st_line( path, newlines ):
@@ -130,7 +151,7 @@ def main():
     print "============================="
     print "You will need to run the following command before you can use %(name)s-%(version)s software" % { 'name': name, 'version': version }
     print 
-    print "   source %s/bin/envs.sh" % install_root
+    print "  $ . %s/bin/envs.sh" % install_root
     print
     print "You can add this command to your .bashrc so that it is executed automatically"
     return
