@@ -25,6 +25,16 @@ def download( link, path ):
     return
 
 
+def verify(path):
+    f = open(path)
+    for i in range(10):
+        line = f.readline()
+        if line.find('Object not found'):
+            raise RuntimeError, 'failed to load %s' % (os.path.basename(path))
+        continue
+    return
+
+
 def expand( tarball, path ):
     f = os.path.join( path, tarball ) 
     if not os.path.exists( f ) :
@@ -141,6 +151,7 @@ def main():
 
     install_root = os.path.join( path, identifier )
     download( link, path )
+    verify(os.path.join(path, tarball))
 
     expand( tarball, path )
 
