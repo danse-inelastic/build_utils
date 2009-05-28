@@ -29,8 +29,9 @@ def verify(path):
     f = open(path)
     for i in range(10):
         line = f.readline()
-        if line.find('Object not found'):
-            raise RuntimeError, 'failed to load %s' % (os.path.basename(path))
+        if line.find('Object not found') != -1:
+            raise RuntimeError, 'failed to load %s: %s' % (
+                os.path.basename(path), line)
         continue
     return
 
