@@ -144,6 +144,7 @@ def main():
 
     identifier = '-'.join( identifier )
 
+    path = os.path.abspath(path)
     if not os.path.exists( path ): os.makedirs( path )
 
     tarball = "%s.tgz" % identifier
