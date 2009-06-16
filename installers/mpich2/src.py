@@ -1,8 +1,8 @@
 name = 'mpich2'
-server = 'http://www.mcs.anl.gov/research/projects/mpich2/downloads/tarballs'
+server = 'http://www.mcs.anl.gov/research/projects/mpich2/downloads/tarballs/1.0.8p1'
 
 def get( version = None, **kwds ):
-    if version is None: version = "1.0.7"
+    if version is None: version = "1.0.8p1"
     cmds = [
         './configure --prefix=%s --enable-sharedlibs=gcc' % install_path,
         'make',
