@@ -2,26 +2,20 @@
 import os
 
 
-def checkoutCmd( repo, name, branch ):
+def checkoutCmd( server, repo, branch, revision=None, name=None ):
     '''checkoutCmd( "svn://danse.us", "histogram", "releases/DRCS-1.2" )
     '''
-    cmds = [
-        "svn co -N %s/%s" % ( repo, name ),
-        "cd %s" % name,
-        ]
-    leaves = branch.split( '/' )
-    for p in leaves[:-1]:
-        cmd = "svn up -N %s && cd %s" % (p, p)
-        cmds.append( cmd )
-        continue
-    cmds.append( 'svn up %s' % leaves[-1] )
-
-    return ' && '.join( cmds )
+    if name is None: name = repo
+    cmd = [ "svn co" ]
+    if revision: cmd.append('-r %s' % revision)
+    cmd.append("%(server)s/%(repo)s/%(branch)s %(name)s" % locals())
+    return ' '.join( cmd )
 
 
-def repoinfo( name, branch, repo = "svn://danse.us" ):
-    path = os.path.join( name, branch ) # path to the checked-out stuff 
-    coCmd = checkoutCmd( "svn://danse.us", name, branch )
+def repoinfo( repo, branch, server = "svn://danse.us", revision=None, name=None ):
+    if name is None: name = repo
+    path = name # path to the checked-out stuff 
+    coCmd = checkoutCmd( server, repo, branch, revision=revision, name=name )
     updateCmd = "svn update"
     return path, coCmd, updateCmd
     
