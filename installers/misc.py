@@ -15,6 +15,7 @@
 dynamicloadedlibrary_exts = {
     'darwin': 'dylib',
     'linux2': 'so',
+    'cygwin': 'so',
     }
 
 
