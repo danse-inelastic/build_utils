@@ -61,7 +61,7 @@ class PythonPaths(PathsFinder):
         # for extensions under Cygwin and AtheOS Python's library directory must be
         # appended to library_dirs
         if sys.platform[:6] == 'cygwin' or sys.platform[:6] == 'atheos':
-            if string.find(sys.executable, sys.exec_prefix) != -1:
+            if str.find(sys.executable, sys.exec_prefix) != -1:
                 # building third party extensions
                 library_dirs.append(
                     os.path.join(sys.prefix, "lib",
