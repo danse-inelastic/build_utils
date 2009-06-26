@@ -8,5 +8,5 @@ deps = ('dsm', 'numpyext', 'bpext',
 import repoutils
 reponame = 'MCViNE'
 branch = "trunk"
-path, checkoutCmd, updateCmd = repoutils.svn.repoinfo( reponame, branch )
+path, checkoutCmd, updateCmd = repoutils.svn.repoinfo( reponame, branch, name=name)
 
