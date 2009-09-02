@@ -1,22 +1,9 @@
-name="config"
-setupScript = 'setup_config'
-path = 'distutils-adpt/trunk/caltechbpconfig'
-sub_modules = None
-deps = ('distutils-adpt',)
+name = 'config'
+deps = []
 
-
-checkoutCmd = None # it is checked out when distutils_adpt is checked out
-updateCmd = None # it is updated out when distutils_adpt is checked out
-
-
-
-def patch( dest ):
-    remove_citconfig_cfiles( dest )
-    return
-
-def remove_citconfig_cfiles(dest):
-    import os
-    os.system( "find '%s' -name '*.c' -exec rm -f {} \;" % (dest,) )
-    return
+from utils import repoutils
+reponame = 'ctrl'
+branch = "config/branches/with_doxygen_and_docbook_support"
+path, checkoutCmd, updateCmd = repoutils.svn.repoinfo(reponame, branch, name=name)
 
 
