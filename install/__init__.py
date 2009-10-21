@@ -12,10 +12,10 @@
 #
 
 
-def copy_all( src, target ):
+def copy_all( src, target, **opts ):
     "copy everything under src to target"
     from distutils.dir_util import copy_tree
-    copy_tree( src, target )
+    copy_tree( src, target, **opts )
     return
 
 
