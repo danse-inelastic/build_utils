@@ -13,10 +13,11 @@
 
 
 name = 'numpy'
-server = 'http://superb-west.dl.sourceforge.net/sourceforge/numpy'
+server = 'http://downloads.sourceforge.net/project/numpy/NumPy/1.3.0'
+#http://downloads.sourceforge.net/project/numpy/NumPy/1.3.0/numpy-1.3.0.tar.gz
 
 def get( version = None, **kwds ):
-    if version is None: version = "1.0.4"
+    if version is None: version = "1.3.0"
     cmd = 'python setup.py install --prefix=%s --install-lib=%s/python' % (
         install_path, install_path)
     def _():

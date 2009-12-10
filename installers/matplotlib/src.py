@@ -13,10 +13,12 @@
 
 
 name = 'matplotlib'
-server = 'http://superb-west.dl.sourceforge.net/sourceforge/matplotlib'
+server = 'http://downloads.sourceforge.net/project/matplotlib/matplotlib/matplotlib-0.99'
+#http://downloads.sourceforge.net/project/matplotlib/matplotlib/matplotlib-0.99/matplotlib-0.99.0.tar.gz
+#http://downloads.sourceforge.net/project/matplotlib/matplotlib/matplotlib-0.99.1/matplotlib-0.99.1.2.tar.gz
 
 def get( version = None, **kwds ):
-    if version is None: version = "0.90.1"
+    if version is None: version = "0.99.0"
     cmds = [
         "python setup.py install --prefix=%s --install-lib=%s/python" % (
         install_path, install_path ),
