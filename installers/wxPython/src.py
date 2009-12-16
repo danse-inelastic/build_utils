@@ -13,11 +13,11 @@
 
 
 name = 'wxPython'
-#server = 'http://superb-west.dl.sourceforge.net/sourceforge/wxpython'
-server = 'svn://danse.us/buildInelast/external/wxPython/2.8.4.0/src'
+#server = 'svn://danse.us/buildInelast/external/wxPython/2.8.4.0/src'
+server = 'http://downloads.sourceforge.net/project/wxpython/wxPython/2.8.10.1'
 
 def get( version = None, **kwds ):
-    if version is None: version = "2.8.4.0"
+    if version is None: version = "2.8.10.1"
     identifier = '%s-src-%s' % (name, version)
     
     Args="BUILD_GLCANVAS=0"
