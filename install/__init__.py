@@ -31,13 +31,16 @@ export DYLD_LIBRARY_PATH=$root/lib:$deps/lib:$DYLD_LIBRARY_PATH
 export PYTHONPATH=$root/modules:$deps/python:$PYTHONPATH
 """
 
-def build_envs_sh( target ):
+def envs_sh_content(root):
+    return fmtstr % root
+
+def build_envs_sh( target, content=None ):
     "build envs.sh on target's bin directory"
     import os
     target = os.path.abspath( target )
-    s = fmtstr % target
+    if content is None: content = envs_sh_content(target)
     f = os.path.join( target, 'bin', 'envs.sh' )
-    open(f, 'w').write(s )
+    open(f, 'w').write(content)
     return
     
 
