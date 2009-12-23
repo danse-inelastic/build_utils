@@ -41,10 +41,12 @@ def get_info(repourl):
     d = {}
     for k, v in iter_info(repourl):
         d[k] = v
+    if not d:
+        raise RuntimeError, 'failed to retrieve svn info for %s' % repourl
     return d
 
 
-def get_current_revision(repourl, server='svn://danse.us'):
+def get_revision(repourl, server='svn://danse.us'):
     if server:
         repourl = server+'/'+repourl
     info = get_info(repourl)
