@@ -14,9 +14,39 @@ def checkoutCmd( server, repo, branch, revision=None, name=None ):
 
 def repoinfo( repo, branch, server = "svn://danse.us", revision=None, name=None ):
     if name is None: name = repo
-    path = name # path to the checked-out stuff 
+    path = name # path to the checked-out stuff
     coCmd = checkoutCmd( server, repo, branch, revision=revision, name=name )
     updateCmd = "svn update"
     return path, coCmd, updateCmd
     
-    
+
+
+import subprocess as sp
+def iter_info(repourl):
+    cmd = ['svn', 'info', repourl]
+    p = sp.Popen(cmd, stdout=sp.PIPE)
+    r = p.communicate()
+    t = r[0]
+    lines = t.splitlines()
+    for line in lines:
+        index = line.find(':')
+        if index == -1: continue
+        k = line[:index]
+        v = line[index+1:]
+        yield k,v
+    return
+
+
+def get_info(repourl):
+    d = {}
+    for k, v in iter_info(repourl):
+        d[k] = v
+    return d
+
+
+def get_current_revision(repourl, server='svn://danse.us'):
+    if server:
+        repourl = server+'/'+repourl
+    info = get_info(repourl)
+    rev = info['Revision']
+    return int(rev)

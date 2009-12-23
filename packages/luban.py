@@ -1,4 +1,3 @@
-setupScript = 'setup_luban'
 name = 'luban'
 sub_modules = None
 deps = 'pythia',
