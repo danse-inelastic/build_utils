@@ -13,7 +13,7 @@
 
 
 name = 'boostpython'
-server = 'http://superb-east.dl.sourceforge.net/sourceforge/boost'
+server = 'http://downloads.sourceforge.net/project/boost/boost/1.35.0'
 
 def get( version = None, **kwds ):
     name = 'boost'
