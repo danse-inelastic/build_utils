@@ -84,6 +84,7 @@ def runtestsInDir(
         _restore()
         return
     #
+    
     for m in testmodules:
         f = getattr(m, testsuitefactory)
         suite1 = f()
@@ -149,8 +150,8 @@ def runtests(path):
     start = time.time()
     for dirpath, dirnames, filenames in os.walk(path):
         for dir in dirnames:
-            path = os.path.join(dirpath, dir)
-            r = runtestsInDir(path)
+            path1 = os.path.join(dirpath, dir)
+            r = runtestsInDir(path1)
             if r:
                 result += r
         continue
