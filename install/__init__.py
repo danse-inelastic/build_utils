@@ -38,9 +38,19 @@ def build_envs_sh( target, content=None ):
     "build envs.sh on target's bin directory"
     import os
     target = os.path.abspath( target )
+
+    # content of the envs.sh
     if content is None: content = envs_sh_content(target)
-    f = os.path.join( target, 'bin', 'envs.sh' )
+    
+    # 
+    bindir = os.path.join( target, 'bin' )
+    # make dir if necessary
+    if not os.path.exists(bindir): os.makedirs(bindir)
+    
+    # envs.sh
+    f = os.path.join( bindir, 'envs.sh' )
     open(f, 'w').write(content)
+    
     return
     
 
