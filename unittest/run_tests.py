@@ -84,9 +84,15 @@ def runtestsInDir(
     if not testmodules:
         _restore()
         return
+
+    #
+    _standalonetestmodules = []
     #
     import warnings
     for m in testmodules:
+        if hasattr(m, 'standalone'):
+            _standalonetestmodules.append(os.path.join(path, m.__file__))
+            continue
         if hasattr(m, testsuitefactory):
             f = getattr(m, testsuitefactory)
             suite1 = f()
@@ -108,9 +114,16 @@ def runtestsInDir(
     _restore()
 
     if ret.testsRun:
-        return _formatResult(ret)
+        res = _formatResult(ret)
+        res.testsMissed += _standalonetestmodules
 
-    return
+    elif _standalonetestmodules:
+        res = Result()
+        res.testsMissed = _standalonetestmodules
+    else:
+        res = None
+    return res
+
 
 
 def _formatResult(result):
@@ -142,11 +155,14 @@ class Result:
         self.failures = []
         self.errors = []
         self.timeTaken = 0
+        self.testsMissed = []
+        
 
     def __iadd__(self, result):
         self.testsRun += result.testsRun
         self.failures += result.failures
         self.errors += result.errors
+        self.testsMissed += result.testsMissed
         return self
 
 
@@ -221,6 +237,20 @@ def printRsult(result, stream = None):
         stream.writeln(")")
     else:
         stream.writeln("OK")
+
+    if result.testsMissed:
+        import subprocess as sp
+        stream.writeln()
+        stream.writeln('-' * 70)
+        stream.writeln('Missed %s tests.' % len(result.testsMissed))
+        stream.writeln('Run them one by one')
+        for t in result.testsMissed:
+            path, filename = os.path.split(t)
+            cmd = 'cd %s && python %s' % (path, filename)
+            stream.writeln('running %s...' % cmd)
+            p = sp.Popen(cmd, stdout=stream, stderr=stream, shell=True)
+            p.communicate()
+            continue
     return
 
 
