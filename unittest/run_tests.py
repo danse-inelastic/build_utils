@@ -50,6 +50,7 @@ def runtestsInDir(
     path,
     isunittestmodule=isunittestmodule_bypostfix(),
     testsuitefactory='pysuite',
+    testcase='TestCase',
     testrunner = None,
     ):
     """find all unit tests in the directoy of given path
@@ -84,10 +85,17 @@ def runtestsInDir(
         _restore()
         return
     #
-    
+    import warnings
     for m in testmodules:
-        f = getattr(m, testsuitefactory)
-        suite1 = f()
+        if hasattr(m, testsuitefactory):
+            f = getattr(m, testsuitefactory)
+            suite1 = f()
+        elif hasattr(m, testcase):
+            t = getattr(m, testcase)
+            suite1 = unittest.makeSuite(t)
+        else:
+            warnings.warn("Don't know how to extract test suite out of %s" % m)
+            continue
         suite.addTest(suite1)
         continue
 
