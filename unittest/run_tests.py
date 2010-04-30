@@ -87,11 +87,15 @@ def runtestsInDir(
 
     #
     _standalonetestmodules = []
+    _skipped = []
     #
     import warnings
     for m in testmodules:
         if hasattr(m, 'standalone'):
             _standalonetestmodules.append(os.path.join(path, m.__file__))
+            continue
+        if hasattr(m, 'skip'):
+            _skipped.append(os.path.join(path, m.__file__))
             continue
         if hasattr(m, testsuitefactory):
             f = getattr(m, testsuitefactory)
@@ -115,11 +119,13 @@ def runtestsInDir(
 
     if ret.testsRun:
         res = _formatResult(ret)
-        res.testsMissed += _standalonetestmodules
+        res.standaloneTests += _standalonetestmodules
+        res.skippedTests += _skipped
 
-    elif _standalonetestmodules:
+    elif _standalonetestmodules or _skipped:
         res = Result()
-        res.testsMissed = _standalonetestmodules
+        res.standaloneTests = _standalonetestmodules
+        res.skippedTests = _skipped
     else:
         res = None
     return res
@@ -155,14 +161,16 @@ class Result:
         self.failures = []
         self.errors = []
         self.timeTaken = 0
-        self.testsMissed = []
+        self.standaloneTests = []
+        self.skippedTests = []
         
 
     def __iadd__(self, result):
         self.testsRun += result.testsRun
         self.failures += result.failures
         self.errors += result.errors
-        self.testsMissed += result.testsMissed
+        self.standaloneTests += result.standaloneTests
+        self.skippedTests += result.skippedTests
         return self
 
 
@@ -238,18 +246,26 @@ def printRsult(result, stream = None):
     else:
         stream.writeln("OK")
 
-    if result.testsMissed:
+    if result.standaloneTests:
         import subprocess as sp
         stream.writeln()
         stream.writeln('-' * 70)
-        stream.writeln('Missed %s tests.' % len(result.testsMissed))
+        stream.writeln('%s standalone tests.' % len(result.standaloneTests))
         stream.writeln('Run them one by one')
-        for t in result.testsMissed:
+        for t in result.standaloneTests:
             path, filename = os.path.split(t)
             cmd = 'cd %s && python %s' % (path, filename)
-            stream.writeln('running %s...' % cmd)
+            stream.writeln(' - running %s...' % cmd)
             p = sp.Popen(cmd, stdout=stream, stderr=stream, shell=True)
             p.communicate()
+            continue
+
+    if result.skippedTests:
+        stream.writeln()
+        stream.writeln('-' * 70)
+        stream.writeln('Skipped %s tests.' % len(result.skippedTests))
+        for t in result.skippedTests:
+            stream.writeln(' - %s' % t)
             continue
     return
 
