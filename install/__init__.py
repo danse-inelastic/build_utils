@@ -36,6 +36,9 @@ def envs_sh_content(root):
 
 def build_envs_sh( target, content=None ):
     "build envs.sh on target's bin directory"
+    import warnings
+    warnings.warn('utils.install.build_envs_sh is obsolete. use utils.scripts.build_envs_sh')
+
     import os
     target = os.path.abspath( target )
 
