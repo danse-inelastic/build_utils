@@ -26,11 +26,12 @@ export DYLD_LIBRARY_PATH=$export_root/lib:$deps/lib:$DYLD_LIBRARY_PATH
 export PYTHONPATH=$export_root/modules:$deps/python:$PYTHONPATH
 """
 
-def envs_sh_content(root, package):
-    return fmtstr % {'export_root': root, 'package': package.upper()}
+def envs_sh_content(root, package, template=None):
+    if template is None: template = fmtstr
+    return template % {'export_root': root, 'package': package.upper()}
 
 
-def build_envs_sh( package, target, content=None ):
+def build_envs_sh( package, target, content=None, template=None):
     """build envs.sh on target's bin directory
     
     package: name of the package, eg luban
@@ -40,7 +41,8 @@ def build_envs_sh( package, target, content=None ):
     target = os.path.abspath( target )
 
     # content of the envs.sh
-    if content is None: content = envs_sh_content(target, package)
+    if content is None: 
+        content = envs_sh_content(target, package, template=template)
     
     # 
     bindir = os.path.join( target, 'bin' )
@@ -52,6 +54,29 @@ def build_envs_sh( package, target, content=None ):
     open(f, 'w').write(content)
     return
 
+
+def createMain(package, template=None):
+    "factory to create 'main' function"
+    def main():
+        usage = 'usage: %prog ' + 'path-to-%s-installation' % package
+
+        import optparse
+        parser = optparse.OptionParser(usage=usage)
+
+        options, args = parser.parse_args()
+
+        if len(args) > 1:
+            parser.print_usage()
+            return
+
+        if len(args) == 0:
+            path = 'EXPORT'
+        else:
+            path = args[0]
+
+        build_envs_sh(package, path, template=template)
+        return
+    return main
 
 
 # version
