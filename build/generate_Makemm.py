@@ -30,13 +30,20 @@ def render(path, project):
     d = { 'project': project }
     
     import packages
-    table = packages.packageInfoTable
+    packageInfoTable = getattr(packages, 'packageInfoTable', None)
+    if packageInfoTable:
+        # old "packages"
+        table = packages.packageInfoTable
 
-    dirs = []
-    for name in packages.packageNames:
-        info = table[name]
-        dirs.append( info['path'] )
-        continue
+        dirs = []
+        for name in packages.packageNames:
+            info = table[name]
+            dirs.append( info['path'] )
+            continue
+    else:
+        # new oo "packages"
+        pkgs = packages.getAll()
+        dirs = [p.name for p in pkgs]
 
     dirs = ''.join( ['\t%s \\\n' % dir for dir in dirs] )
     d['directories'] = dirs

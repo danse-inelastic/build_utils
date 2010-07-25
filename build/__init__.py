@@ -57,8 +57,16 @@ def _build(release, builddirs, args = []):
     builddirs: directories of the build (instance of BuildDirs)
     '''
     
-    from packages import packageInfoTable
-    config_dir = os.path.join( builddirs.src, packageInfoTable['config']['path'] )
+    import packages
+    packageInfoTable = getattr(packages, 'packageInfoTable', None)
+    
+    if packageInfoTable:
+        # old "packages"
+        config_dir = os.path.join( builddirs.src, packageInfoTable['config']['path'] )
+    else:
+        # new oo "packages"
+        from packages import config
+        config_dir = config.name
 
     import build
     succeeded = False
