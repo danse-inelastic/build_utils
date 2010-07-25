@@ -62,11 +62,12 @@ def _build(release, builddirs, args = []):
     
     if packageInfoTable:
         # old "packages"
-        config_dir = os.path.join( builddirs.src, packageInfoTable['config']['path'] )
+        config_dir = packageInfoTable['config']['path']
     else:
         # new oo "packages"
         from packages import config
         config_dir = config.name
+    config_dir = os.path.join( builddirs.src, config_dir)
 
     import build
     succeeded = False
