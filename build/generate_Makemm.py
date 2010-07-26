@@ -42,7 +42,9 @@ def render(path, project):
             continue
     else:
         # new oo "packages"
-        pkgs = packages.getAll()
+        from utils.packages.factories.fromPyPackage import factory
+        pkgs = factory(packages)
+        pkgs = pkgs.getAll()
         dirs = [p.name for p in pkgs]
 
     dirs = ''.join( ['\t%s \\\n' % dir for dir in dirs] )

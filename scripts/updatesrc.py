@@ -12,9 +12,15 @@
 #
 
 
-# script to check out sources
+# script to update sources
 
-def update(names, pkgcontainer, tree):
+def get(names, pkgcontainer, tree):
+    '''get sources of packages
+
+    - names: a list of package names
+    - pkgcontainer: the container of packages. must have the API defined in utils.packages.Packages
+    - releaser_tree: directory tree structure of the releaser
+    '''
     srcRt = tree.search( "sources" ).path
     if names:
         packages = [pkgcontainer.getPackage(n) for n in names]
@@ -27,30 +33,22 @@ def update(names, pkgcontainer, tree):
     return
 
 
-def main(pkgcontainer, releaser_tree):
-    '''main function
-    
-    - pkgcontainer: the container of packages. must have the API defined in utils.packages.Packages
-    - releaser_tree: directory tree structure of the releaser
-    
-    '''
+
+def main():
+    import packages
+    from ..packages.factories import fromPyPackage
+    pkgcontainer = fromPyPackage.factory(packages)
+
+    from directory_structure import tree
+
     from optparse import OptionParser
     parser = OptionParser()
     (options, args) = parser.parse_args()
     names = args
-    update(names, pkgcontainer, releaser_tree)
+    
+    get(names, pkgcontainer, tree)
     return
 
-
-def main2(packages_pypkg, releaser_tree):
-    '''main function
-    
-    - packages_pypkg: the python package that has modules describing source packages
-    - releaser_tree: directory tree structure of the releaser
-    '''
-    from ..packages.factories import fromPyPackage
-    pkgcontainer = fromPyPackage.factory(packages_pypkg)
-    return main(pkgcontainer, releaser_tree)
 
 
 # version
