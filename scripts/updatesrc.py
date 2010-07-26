@@ -14,14 +14,14 @@
 
 # script to check out sources
 
-def get(names, pkgcontainer, tree):
+def update(names, pkgcontainer, tree):
     srcRt = tree.search( "sources" ).path
     if names:
         packages = [pkgcontainer.getPackage(n) for n in names]
     else:
         packages = pkgcontainer.getAll()
-    from ..packages import checkout
-    checkout(packages, srcRt)
+    from ..packages import update
+    update(packages, srcRt)
     # import dereference
     # dereference.dereference_recursively( 'src' )
     return
@@ -38,7 +38,7 @@ def main(pkgcontainer, releaser_tree):
     parser = OptionParser()
     (options, args) = parser.parse_args()
     names = args
-    get(names, pkgcontainer, releaser_tree)
+    update(names, pkgcontainer, releaser_tree)
     return
 
 
