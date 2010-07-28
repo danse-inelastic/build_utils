@@ -13,6 +13,13 @@ def checkoutCmd( server, repo, branch, revision=None, name=None ):
     return ' '.join( cmd )
 
 
+def updateCmd(revision=None):
+    cmd = "svn update"
+    if revision:
+        cmd += ' -r %s' % revision
+    return cmd
+
+
 def repourl(repo, branch, server = 'svn://danse.us'):
     return "%(server)s/%(repo)s/%(branch)s" % locals()
 
@@ -22,8 +29,8 @@ def repoinfo( repo, branch,
     if name is None: name = repo
     path = name # path to the checked-out stuff
     coCmd = checkoutCmd( server, repo, branch, revision=revision, name=name )
-    updateCmd = "svn update"
-    return path, coCmd, updateCmd
+    upCmd = updateCmd(revision=revision)
+    return path, coCmd, upCmd
 
 
 import subprocess as sp

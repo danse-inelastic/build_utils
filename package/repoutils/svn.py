@@ -15,9 +15,7 @@
 # this module tries to bind with object utils.package.Package.Repository.
 
 
-from utils.svnrepoutils import checkoutCmd, repourl
-
-update_command = 'svn update'
+from utils.svnrepoutils import checkoutCmd, updateCmd, repourl
 
 def getPackageRepository(
     repo, branch, 
@@ -41,7 +39,7 @@ Eg.:
     r = Repository()
     r.checkout_command = checkoutCmd(
         server, repo, branch, revision=revision, name=name )
-    r.update_command = update_command
+    r.update_command = updateCmd(revision=revision)
     r.url = repourl(repo, branch, server=server)
     r.name = repo
     r.pkgname = name or repo

@@ -14,8 +14,8 @@
 
 # script to update sources
 
-def get(names, pkgcontainer, tree):
-    '''get sources of packages
+def update(names, pkgcontainer, tree):
+    '''update sources of packages
 
     - names: a list of package names
     - pkgcontainer: the container of packages. must have the API defined in utils.packages.Packages
@@ -27,7 +27,7 @@ def get(names, pkgcontainer, tree):
     else:
         packages = pkgcontainer.getAll()
     from ..packages import update
-    update(packages, srcRt)
+    update(packages, srcRt) #, dry_run=1)
     # import dereference
     # dereference.dereference_recursively( 'src' )
     return
@@ -46,7 +46,7 @@ def main():
     (options, args) = parser.parse_args()
     names = args
     
-    get(names, pkgcontainer, tree)
+    update(names, pkgcontainer, tree)
     return
 
 
