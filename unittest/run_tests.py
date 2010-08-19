@@ -31,7 +31,12 @@ def isunittestmodule_bypostfix(postfix='TestCase.py'):
 
 
 def _importModule(name):
-    exec 'import %s as m' % name
+    try:
+        exec 'import %s as m' % name
+    except:
+        import traceback
+        tb = traceback.format_exc()
+        raise ImportError, 'failed to import %s. traceback:\n%s' % (name, tb)
     return m
 
 
