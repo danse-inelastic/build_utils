@@ -22,6 +22,11 @@ class Package:
     patch = None # patch method to apply patch
 
 
+    def getRevision(self):
+        from .repoutils import getRevision
+        return getRevision(self.repo)
+
+
 class Repository:
 
     'package repository'

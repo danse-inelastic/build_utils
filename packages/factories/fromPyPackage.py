@@ -51,7 +51,7 @@ def createTable(packageNames, pypkg):
     for name in packageNames:
         modname = name.replace( '-', '_' )
         m = _imp(modname, pypkg)
-        t[name] = m
+        t[name] = PackageProxy(m)
         continue
     return t
 
@@ -75,6 +75,20 @@ class Packages(base):
         return self.name2package[name]
 
 
+from utils.package.Package import Package
+class PackageProxy(Package):
+    
+    '''a proxy of a python module containing the
+    information about a package acts like utils.package.Package
+    '''
+
+    def __init__(self, module):
+        self._module = module
+        for k in ['name', 'deps', 'repo', 'patch']:
+            v = getattr(module, k, None)
+            setattr(self, k, v)
+        return
+    
 
 def _imp(module, pypkg):
     name = pypkg.__name__
