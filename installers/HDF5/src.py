@@ -1,8 +1,23 @@
 name = 'hdf5'
-server = 'ftp://ftp.hdfgroup.org/HDF5/prev-releases'
+
+# the implementation here at this only supports 1.6
+
+pre_server = 'ftp://ftp.hdfgroup.org/HDF5/prev-releases'
+current_server = 'ftp://ftp.hdfgroup.org/HDF5/current16/src'
 
 def get( version = None, **kwds ):
     if version is None: version = "1.6.5"
+    if not version.startswith('1.6'):
+        raise NotImplementedError
+    
+    if version == '1.6.10':
+        server = current_server
+    else:
+        major, minor, release = version.split('.')
+        server = pre_server 
+        if int(release)>=6:
+            server += '/hdf5-%s/src' % version
+        
     cmds = [
         './configure --prefix=%s --enable-cxx' % install_path,
         'make',
