@@ -1,4 +1,6 @@
-
+name='ins-data'
+reponame = 'ins-data'
+branch = ''
 
 setupScript = 'setup_ins_data'
 path = 'ins-data'

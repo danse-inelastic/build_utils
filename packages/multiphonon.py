@@ -1,3 +1,7 @@
+name = 'multiphonon'
+reponame = name
+branch = ''
+
 
 setupScript = 'setup_multiphonon'
 path = 'multiphonon'
