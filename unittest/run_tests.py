@@ -252,18 +252,31 @@ def printRsult(result, stream = None):
         stream.writeln("OK")
 
     if result.standaloneTests:
+        # run standalone tests in sub-processes
         import subprocess as sp
         stream.writeln()
         stream.writeln('-' * 70)
         stream.writeln('%s standalone tests.' % len(result.standaloneTests))
         stream.writeln('Run them one by one')
+        failures = []
         for t in result.standaloneTests:
             path, filename = os.path.split(t)
             cmd = 'cd %s && python %s' % (path, filename)
             stream.writeln(' - running %s...' % cmd)
             p = sp.Popen(cmd, stdout=stream, stderr=stream, shell=True)
             p.communicate()
+            rt = p.wait()
+            if rt: failures.append(t)
             continue
+        result.failures += failures
+        stream.writeln()
+        stream.writeln('-' * 70)
+        stream.writeln('Ran %s standalone tests.' % len(result.standaloneTests))
+        if failures:
+            stream.writeln('FAILED (errors=%s)' % len(failures))
+        else:
+            stream.writeln('SUCCEED')
+            
 
     if result.skippedTests:
         stream.writeln()
