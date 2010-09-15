@@ -1,6 +1,6 @@
 name = 'multiphonon'
 reponame = name
-branch = ''
+branch = 'trunk'
 
 
 setupScript = 'setup_multiphonon'
