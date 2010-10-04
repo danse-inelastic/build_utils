@@ -17,9 +17,12 @@
 
 from utils.svnrepoutils import checkoutCmd, updateCmd, repourl
 
+default_repo_server = 'svn://danse.us'
+#default_repo_server = 'svn+ssh://svn@danse.us'
+
 def getPackageRepository(
     repo, branch, 
-    server = "svn://danse.us", revision=None, name=None):
+    server = None, revision=None, name=None):
     '''getPackageRepository(repo, branch, server,...) -> Package.Repository instance
 
 repo: name of repository for the package
@@ -35,6 +38,7 @@ Eg.:
          server = "svn://danse.us", name = "luban")
 
 '''
+    if server is None: server = default_repo_server
     from ..Package import Repository
     r = Repository()
     r.checkout_command = checkoutCmd(
