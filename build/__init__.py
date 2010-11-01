@@ -22,16 +22,23 @@ def get_release():
     return release
 
 
-def build_release(releaser_root):
+def build_release(releaser_root, export_root=None):
     'build a release'
     release = get_release()
-    return _build( release, build_dirs( releaser_root ) )
+    return _build(
+        release,
+        build_dirs( releaser_root, export=export_root ),
+        )
 
 
-def build_docs(releaser_root):
+def build_docs(releaser_root, export_root=None):
     'build a release'
     release = get_release()
-    return _build( release, build_dirs( releaser_root ), args = ['docs'] )
+    return _build(
+        release,
+        build_dirs( releaser_root, export=export_root ),
+        args = ['docs'],
+        )
 
 
 def build_dirs( root, tmp = None, export = None, src = None, build = None ):
