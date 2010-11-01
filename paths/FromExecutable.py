@@ -85,10 +85,11 @@ class PathsFinder(base):
         #
         desc = desc_format_str % " root"
         #
-        print "Searching for %s, which is %s ..." % (self.name, desc),
+        print "Searching for %s using mechansim \"%s\", which is %s ..." % (
+            self.name, self.mechanism, desc)
         executable = self.signatures['executable']
         res = get_usingExec( executable )
-        print "found --> %s" % res
+        print " * found --> %s" % res
         return res
 
     

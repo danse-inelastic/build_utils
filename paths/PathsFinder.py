@@ -41,7 +41,31 @@ class PathsFinder:
 
     def _validate(self, paths):
         validator = self._validator
-        if validator: validator(paths)
+        if validator:
+            try:
+                validator(paths)
+            except Exception, e:
+                raise ValidationError, str(e)
         return 
     
+
+
+
+class ValidationError(Exception): pass
+
+
+def exists(file, paths):
+    'check if the given file exists in one of the given paths'
+    import os, glob
+    for path in paths:
+        p = os.path.join(path, file)
+        if glob.glob(p): return True
+        continue
+    return False
+
+
+def assertExists(file, paths):
+    if not exists(file, paths):
+        raise RuntimeError, 'Failed to find %s in %s' % (file, paths)
+
 

@@ -78,30 +78,47 @@ def _build(release, builddirs, args = []):
                 builddirs.build, config_dir,
                 arguments = args)
             succeeded = True
-        except build.DependencyMissing, dep:
+        except build.DependencyMissing, err:
 
-            dep = str(dep )
+            depname = err.packagename
+            depid = err.packageid
+
+            print '*** Dependency %s is missing ***' % depname
+
+            # error message
+            if err.errormessage:
+                msg = err.errormessage
+                
+            from ..misc._formatstr import indent
+            msg = indent(msg, '| ')
+            print '* Error:\n%s\n' % msg
+
+            # suggestion
+            if err.suggestion:
+                print '* Suggestion:\n%s\n' % err.suggestion
+                
+            print '* This builder could try to install it locally.'
             
-            if raw_input(" * Install dependency '%s'? (yes/no) " % dep) != 'yes': 
+            if raw_input(" * Install dependency '%s'? (yes/no) " % depname) != 'yes': 
                 print "\nAbort\n"
                 return
 
-            print "Trying to install dependency '%s' ..." % dep
+            print "Trying to install dependency '%s' ..." % depname
 
             # is installer specified?
             from deps import installers
-            installer = installers.get( dep )
+            installer = installers.get( depid )
 
             # use default installer if possible
             if installer is None:
-                installer = get_installer( dep )
+                installer = get_installer( depid )
 
             # install
             installer()
                 
             #after installation, we want to make sure installation
             #is successful. 
-            checkInstallation( dep )
+            checkInstallation( depid )
             pass
         continue
 

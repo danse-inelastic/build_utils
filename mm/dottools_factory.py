@@ -21,7 +21,17 @@ def render_file( path, dependencies,
     return
 
 
-class DependencyMissing(Exception): pass
+class DependencyMissing(Exception):
+
+    def __init__(self, packagename, packageid=None,
+                 errormessage=None, suggestion=None):
+        self.packagename = packagename
+        self.packageid = packageid or packagename
+        self.errormessage = errormessage
+        self.suggestion = suggestion
+        return
+    
+    pass
 
 
 class Factory:
@@ -55,9 +65,17 @@ class Factory:
                 print "rendering .tools codes for %r ..." % dep
                 lines += dottools.render_dependency( dep )
             except InstallationNotFound, err:
-                import traceback
-                print traceback.format_exc()
-                raise DependencyMissing, dep
+                pkgname = err.packagename or dep
+                pkgid = err.packageid or dep
+                msg = err.errormessage
+                if not msg:
+                    import traceback
+                    msg = traceback.format_exc()
+                raise DependencyMissing(
+                    pkgname,
+                    packageid = pkgid,
+                    errormessage = msg,
+                    suggestion = err.possible_solution)
             continue
         return lines
         

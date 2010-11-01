@@ -20,7 +20,7 @@ def import_site():
     except ImportError:
         return
     
-    reload(site)
+    # reload(site)
 
     return
 

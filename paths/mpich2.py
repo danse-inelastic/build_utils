@@ -7,6 +7,15 @@ description = 'Argonne MPI implementation'
 
 from FromEnvVariables import PathsFinder as _EnvPFBase
 
+
+def validate(paths):
+    import os
+    from PathsFinder import assertExists
+    assertExists('mpi.h', paths.includes)
+    assertExists('libmpich.so*', paths.clibs)
+    return
+
+
 class PathsFinder(_EnvPFBase):
     import os
     if os.name == "nt":
@@ -15,14 +24,17 @@ class PathsFinder(_EnvPFBase):
                   'c libraries': 'dll',
                   'python modules': 'python'}
         pass
+
     pass # end of PathsFinder
 
 
-fromEnvVars = PathsFinder( name, description, hints = "mpich2" )
+fromEnvVars = PathsFinder( name, description, hints = "MPI",
+                           validator=validate)
 
 
 from FromExecutable import PathsFinder
-fromExe = PathsFinder( name, description, hints = {"executable": "mpirun.py"} )
+fromExe = PathsFinder( name, description, hints = {"executable": "mpicxx"},
+                       validator = validate)
 
 toolset  = [fromEnvVars,
             fromExe,]
