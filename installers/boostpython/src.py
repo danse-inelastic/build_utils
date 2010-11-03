@@ -32,11 +32,6 @@ def get( version = None, **kwds ):
         'name': name,
         'version': version,
         },
-        'cd %s/lib' % (install_path,),
-        'ln -s `ls -1|grep libboost_python` libboost_python.%(so)s' % {
-        'version': version,
-        'so': so,
-        },
         ]
 
     cmds = install_cmds + postinstall_cmds
@@ -49,6 +44,12 @@ def get( version = None, **kwds ):
             install_commands = cmds,
             **kwds )
 
+        # libboost_python.so
+        import glob, os
+        files = glob.glob('%s/lib/libboost_python*.so.*' % install_path)
+        file0 = files[0]
+        os.symlink(file0, '%s/lib/libboost_python.so' % install_path)
+        
         # notification
         import os
         os.environ['BOOSTPYTHON_DIR'] = install_path

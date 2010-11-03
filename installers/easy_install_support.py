@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+# *** both implementations here do not seem to work
 
 def import_site():
     #site.py is used by easy_install to fix sys.path
@@ -21,7 +22,16 @@ def import_site():
         return
     
     # reload(site)
+    return
 
+
+def import_site(path):
+    import imp
+    name = 'site'
+    file, filename, desc = imp.find_module(name, [path])
+    # imp.load_module(name, file, filename, desc)
+    m = imp.load_module('t', file, filename, desc)
+    m.__boot()
     return
 
 

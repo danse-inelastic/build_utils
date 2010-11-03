@@ -38,8 +38,9 @@ install_path = os.path.join( releaser_root, 'EXPORT', 'deps' )
 
 def include_installed_dependencies():
     #allow access to installed python package
+    depspythonpath = os.path.join(install_path, 'python')
     import sys
-    sys.path = [os.path.join(install_path, 'python')] + sys.path
+    sys.path = [depspythonpath] + sys.path
     os.environ['PYTHONPATH'] = '%s:%s' % (
         os.path.join(install_path, 'python'), 
         os.environ.get('PYTHONPATH') or '' )
@@ -59,7 +60,9 @@ def include_installed_dependencies():
         os.path.join( install_path, 'lib' ), os.environ.get('DYLD_LIBRARY_PATH') or '' )
     return
 
-include_installed_dependencies()
+# the easy_install fix no longer works. have to run a fresh python session
+# with new environment variables
+# include_installed_dependencies()
 
 from utils.unixshell import execute
 

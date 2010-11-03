@@ -18,8 +18,11 @@ server = "http://h5py.googlecode.com/files"
 
 def get( version = None, **kwds ):
     if version is None: version = "1.3.0"
-    cmd = 'python setup.py install --prefix=%s --install-lib=%s/python' % (
-        install_path, install_path)
+    install_pythonpath = '%s/python' % install_path
+    import os
+    if not os.path.exists(install_pythonpath): os.makedirs(install_pythonpath)
+    cmd = 'python setup.py install --prefix=%s --install-lib=%s' % (
+        install_path, install_pythonpath)
     def _():
         return install(
             name, version,
