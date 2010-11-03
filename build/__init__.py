@@ -53,6 +53,8 @@ def build_dirs( root, tmp = None, export = None, src = None, build = None ):
     if src is None: src = os.path.join( root, 'src' )
     if tmp is None: tmp = os.path.join(  root, 'tmp' )
     if build is None: build = os.path.join(tmp, 'build' )
+    from utils import installers
+    installers.install_path = os.path.join(export, 'deps')
 
     from BuildDirs import BuildDirs
     return BuildDirs( root, src, export, build, tmp)

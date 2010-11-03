@@ -39,6 +39,7 @@ def build_envs_sh( package, target, content=None, template=None):
     """
     import os
     target = os.path.abspath( target )
+    print 'building envs.sh for %s' % target
 
     # content of the envs.sh
     if content is None: 
@@ -70,7 +71,9 @@ def createMain(package, template=None):
             return
 
         if len(args) == 0:
-            path = 'EXPORT'
+            from utils.datastore import open
+            build_info = open('build_info')
+            path = build_info.get('export_root', 'EXPORT')
         else:
             path = args[0]
 
