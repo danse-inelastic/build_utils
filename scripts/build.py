@@ -34,9 +34,11 @@ def getsrc():
 
 
 def hasSubdirs(p):
+    skip = '.svn'
     import os
     entries = os.listdir(p)
     for e in entries:
+        if e in skip: continue
         p1 = os.path.join(p, e)
         if os.path.isdir(p1): return True
         continue
