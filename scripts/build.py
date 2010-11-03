@@ -20,7 +20,10 @@ def build(export_root):
     sys.path = [pwd] + sys.path
 
     from utils.build import build_release, clean_up
-    build_release( pwd, export_root=export_root)
+    rt = build_release( pwd, export_root=export_root)
+    if rt:
+        import sys
+        sys.exit(1)
     return
 
 
@@ -82,9 +85,14 @@ def main():
 
     import subprocess
     p = subprocess.Popen(args, env=env)
-    while p.poll() is None:
+    while 1:
         p.communicate()
-
+        rt = p.poll()
+        if rt is not None: break
+        continue
+    if rt:
+        raise RuntimeError, "Command %s failed or aborted" % cmd
+    
 
 # version
 __id__ = "$Id$"

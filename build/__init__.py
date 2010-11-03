@@ -110,7 +110,7 @@ def _build(release, builddirs, args = []):
             
             if raw_input(" * Install dependency '%s'? (yes/no) " % depname) != 'yes': 
                 print "\nAbort\n"
-                return
+                return 1
 
             print "Trying to install dependency '%s' ..." % depname
 
