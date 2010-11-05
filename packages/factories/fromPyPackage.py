@@ -71,7 +71,7 @@ class Packages(base):
         return [self.name2package[n] for n in names]
 
 
-    def getPackage(self, naem):
+    def getPackage(self, name):
         return self.name2package[name]
 
 
