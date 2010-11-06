@@ -15,6 +15,9 @@ def validate(paths):
     return
 
 
+from FromDefaultLocations import PathsFinder
+fromDefaultLoc = PathsFinder(name, description, validator=validate)
+
 
 from FromEnvVariables import PathsFinder
 fromEnvVars = PathsFinder(
@@ -23,7 +26,7 @@ fromEnvVars = PathsFinder(
     validator = validate)
 
 
-toolset  = [fromEnvVars]
+toolset  = [fromDefaultLoc, fromEnvVars]
 
 
 from search import search

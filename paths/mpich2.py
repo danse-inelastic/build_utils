@@ -5,8 +5,6 @@ handle paths for mpich2 package
 name = 'mpich2'
 description = 'Argonne MPI implementation'
 
-from FromEnvVariables import PathsFinder as _EnvPFBase
-
 
 def validate(paths):
     import os
@@ -16,6 +14,19 @@ def validate(paths):
     return
 
 
+from FromDefaultLocations import PathsFinder as _DefLocBase
+class PathsFinder(_DefLocBase):
+    import os
+    if os.uname()[3].find('Ubuntu') != 0:
+        scheme = {'root': '.',
+                  'c headers': 'include/mpich2',
+                  'c libraries': 'lib',
+                  'python modules': 'unknown'}
+    
+fromDefaultLoc = PathsFinder(name, description, validator=validate)
+
+
+from FromEnvVariables import PathsFinder as _EnvPFBase
 class PathsFinder(_EnvPFBase):
     import os
     if os.name == "nt":
@@ -36,7 +47,8 @@ from FromExecutable import PathsFinder
 fromExe = PathsFinder( name, description, hints = {"executable": "mpicxx"},
                        validator = validate)
 
-toolset  = [fromEnvVars,
+toolset  = [fromDefaultLoc,
+            fromEnvVars,
             fromExe,]
 
 
