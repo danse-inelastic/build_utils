@@ -25,4 +25,5 @@ class BashScriptor(object):
         return ['export %s="%s":$%s' % (op.name, op.value, op.name)]
 
 
+# $Id$
 # end of file
