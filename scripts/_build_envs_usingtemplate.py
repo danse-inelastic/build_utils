@@ -11,41 +11,30 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import warnings
+warnings.warn('This is obsolete. Consider rewrite using utils.envvars.operations.')
+
 # script to build envs.sh
 
 
-def createEnvVarOps(package, export):
-    import os
-    from ..envvars.operations import Set, Prepend
-    ops = []
-    
-    ops.append(Set('PYRE_DIR', export))
-    ops.append(Set('%s_DIR' % package.upper(), export))
-    
-    depsbin = os.path.join(export, 'deps', 'bin')
-    ops.append(Prepend('PATH', depsbin))
-    
-    bin = os.path.join(export, 'bin')
-    ops.append(Prepend('PATH', bin))
-    
-    depslib = os.path.join(export, 'deps', 'lib')
-    ops.append(Prepend('LD_LIBRARY_PATH', depslib))
-    ops.append(Prepend('DYLD_LIBRARY_PATH', depslib))
+fmtstr = """
+export_root=%(export_root)s
+deps=$export_root/deps
 
-    lib = os.path.join(export, 'lib')
-    ops.append(Prepend('LD_LIBRARY_PATH', lib))
-    ops.append(Prepend('DYLD_LIBRARY_PATH', lib))
+export %(package)s_DIR=$export_root
+export PYRE_DIR=$export_root
+export PATH=$export_root/bin:$deps/bin:$PATH
+export LD_LIBRARY_PATH=$export_root/lib:$deps/lib:$LD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH=$export_root/lib:$deps/lib:$DYLD_LIBRARY_PATH
+export PYTHONPATH=$export_root/modules:$deps/python:$PYTHONPATH
+"""
 
-    depspy = os.path.join(export, 'deps', 'python')
-    ops.append(Prepend('PYTHONPATH', depspy))
-    
-    py = os.path.join(export, 'modules')
-    ops.append(Prepend('PYTHONPATH', py))
-
-    return ops
+def envs_sh_content(root, package, template=None):
+    if template is None: template = fmtstr
+    return template % {'export_root': root, 'package': package.upper()}
 
 
-def build_envs_sh(package, target, envvarops_factory=None):
+def build_envs_sh( package, target, content=None, template=None):
     """build envs.sh on target's bin directory
     
     package: name of the package, eg luban
@@ -56,12 +45,8 @@ def build_envs_sh(package, target, envvarops_factory=None):
     print 'building envs.sh for %s' % target
 
     # content of the envs.sh
-    opsfactory = envvarops_factory or createEnvVarOps
-    ops = opsfactory(package, target)
-    from ..envvars.renderers.BashScriptor import BashScriptor
-    scriptor = BashScriptor()
-    lines = scriptor.render(ops)
-    content = '\n'.join(lines)
+    if content is None: 
+        content = envs_sh_content(target, package, template=template)
     
     # 
     bindir = os.path.join( target, 'bin' )
@@ -74,12 +59,8 @@ def build_envs_sh(package, target, envvarops_factory=None):
     return
 
 
-def createMain(package, template=None, envvarops_factory=None):
+def createMain(package, template=None):
     "factory to create 'main' function"
-    if template:
-        from _build_envs_usingtemplate import createMain
-        return createMain(package, template=template)
-    
     def main():
         usage = 'usage: %prog ' + 'path-to-%s-installation' % package
 
@@ -99,7 +80,7 @@ def createMain(package, template=None, envvarops_factory=None):
         else:
             path = args[0]
 
-        build_envs_sh(package, path, envvarops_factory = envvarops_factory)
+        build_envs_sh(package, path, template=template)
         return
     return main
 
