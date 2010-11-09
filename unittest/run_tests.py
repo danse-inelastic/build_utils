@@ -179,14 +179,35 @@ class Result:
         return self
 
 
-def runtests(path):
+def fn_match_patterns(name, patterns):
+    import fnmatch
+    for pattern in patterns:
+        if fnmatch.fnmatch(name, pattern): return True
+        continue
+    return False
+
+
+def path_match_patterns(path, patterns):
+    names = path.split('/')
+    for name in names:
+        if fn_match_patterns(name, patterns): return True
+        continue
+    return False
+
+
+def runtests(path, exclude_dirs=[]):
     '''run unittests recursively and return a Result instance
     '''
+    import fnmatch
     result = Result()
     import time
     start = time.time()
     for dirpath, dirnames, filenames in os.walk(path):
+        if exclude_dirs and path_match_patterns(dirpath, exclude_dirs):
+            continue
         for dir in dirnames:
+            if exclude_dirs and fn_match_patterns(dir, exclude_dirs):
+                continue
             path1 = os.path.join(dirpath, dir)
             r = runtestsInDir(path1)
             if r:
