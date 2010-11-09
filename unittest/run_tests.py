@@ -57,6 +57,7 @@ def runtestsInDir(
     testsuitefactory='pysuite',
     testcase='TestCase',
     testrunner = None,
+    skip_long_test = False,
     ):
     """find all unit tests in the directoy of given path
     (no recursion) and add them in one
@@ -98,6 +99,9 @@ def runtestsInDir(
     for m in testmodules:
         if hasattr(m, 'standalone'):
             _standalonetestmodules.append(os.path.join(path, m.__file__))
+            continue
+        if skip_long_test and hasattr(m, 'long_test') and m.long_test:
+            _skipped.append(os.path.join(path, m.__file__))
             continue
         if hasattr(m, 'skip'):
             _skipped.append(os.path.join(path, m.__file__))
@@ -195,7 +199,7 @@ def path_match_patterns(path, patterns):
     return False
 
 
-def runtests(path, exclude_dirs=[]):
+def runtests(path, exclude_dirs=[], skip_long_test=False):
     '''run unittests recursively and return a Result instance
     '''
     import fnmatch
@@ -209,11 +213,11 @@ def runtests(path, exclude_dirs=[]):
             if exclude_dirs and fn_match_patterns(dir, exclude_dirs):
                 continue
             path1 = os.path.join(dirpath, dir)
-            r = runtestsInDir(path1)
+            r = runtestsInDir(path1, skip_long_test=skip_long_test)
             if r:
                 result += r
         continue
-    r = runtestsInDir(path)
+    r = runtestsInDir(path, skip_long_test=skip_long_test)
     stop = time.time()
     timeTaken = stop-start
     if r:
