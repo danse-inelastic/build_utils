@@ -2,10 +2,7 @@ __doc__ = """search paths of a package at default locations"""
 __author__ = "Jiao Lin"
 
 
-from PathsFinder import PathsFinder as base
-
-
-from utils import findpackage
+from PathsFinder import PathsFinder as base, ValidationError
 
 
 class PathsFinder(base):

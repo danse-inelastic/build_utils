@@ -14,7 +14,8 @@ except ImportError:
     raise InstallationNotFound, "pylons"
 
 
-from Paths import Paths
 
-paths = Paths( name, description = description )
-
+def find():
+    from Paths import Paths
+    paths = Paths( name, description = description )
+    return paths

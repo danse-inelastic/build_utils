@@ -49,8 +49,10 @@ if not lapack_lib:
 else: liblist = [lapack_lib]
 
 
-from Paths import Paths
-paths = Paths( name,
-               description = "Linear Algebra PACKage",
-               origin = 'search liblapack.so using infect utils',
-               clibs = liblist )
+def find():
+    from Paths import Paths
+    paths = Paths( name,
+                   description = "Linear Algebra PACKage",
+                   origin = 'search liblapack.so using infect utils',
+                   clibs = liblist )
+    return paths

@@ -49,8 +49,11 @@ if not blas_lib:
 else: liblist = [blas_lib]
 
 
-from Paths import Paths
-paths = Paths( name,
-               description = "Linear Algebra PACKage",
-               origin = 'search libblas.so using infect utils',
-               clibs = liblist )
+
+def find():
+    from Paths import Paths
+    paths = Paths( name,
+                   description = "Linear Algebra PACKage",
+                   origin = 'search libblas.so using infect utils',
+                   clibs = liblist )
+    

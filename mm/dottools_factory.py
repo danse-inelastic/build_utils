@@ -12,6 +12,9 @@
 #
 
 
+from utils.paths.InstallationNotFound import InstallationNotFound
+
+
 def render_file( path, dependencies,
                  export_root, build_root, config_dir,
                  target = 'shared,opt' ):
@@ -81,8 +84,6 @@ class Factory:
         
     pass # end of Factory
 
-
-from utils.paths.InstallationNotFound import InstallationNotFound
 
 # version
 __id__ = "$Id$"

@@ -44,7 +44,7 @@ def render_config_path( config_dir ):
         ]
 
 
-
+from utils.paths import get as _getpaths
 def getpaths( package ):
     paths = getpathsInInstalledDependencies( package )
     if paths: return paths
@@ -68,8 +68,6 @@ def getpathsInInstalledDependencies( package ):
     
     return ret
 
-
-from utils.paths import get as _getpaths
 
 
 # version

@@ -7,7 +7,7 @@ from PathsFinder import PathsFinder as base
 
 from envUtils import get_usingExec
 from shutils import env
-from utils import findpackage
+from _utils import findpackage
 
 
 class PathsFinder(base):

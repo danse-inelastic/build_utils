@@ -49,8 +49,10 @@ if not libF77_lib:
 else: liblist = [libF77_lib]
 
 
-from Paths import Paths
-paths = Paths( name,
-               description = "F77 lib",
-               origin = 'search libF77 using infect utils',
-               clibs = liblist )
+def find():
+    from Paths import Paths
+    paths = Paths( name,
+                   description = "F77 lib",
+                   origin = 'search libF77 using infect utils',
+                   clibs = liblist )
+    return paths

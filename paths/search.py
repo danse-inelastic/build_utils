@@ -1,3 +1,9 @@
+from utils import logger
+from ..misc._formatstr import indent
+from InstallationNotFound import InstallationNotFound
+from PathsFinder import ValidationError
+import traceback
+            
 
 def search( pathsFinders=[] ):
     """search for package with packageName and description 
@@ -13,15 +19,11 @@ def search( pathsFinders=[] ):
         except ValidationError, msg:
             msg = indent(str(msg), '  ')
             errorMsgs.append( '* Unable to validate paths for package %r obtained from mechanism %r\n  -> The reason of validation failure is \n\n%s\n\n' %(pathsFinder.name, pathsFinder.mechanism, msg) )
-            import traceback
-            from ..logger import debug
-            debug(traceback.format_exc())
+            logger.debug(traceback.format_exc())
         except Exception, msg:
             msg = indent(str(msg), '  ')
             errorMsgs.append( '* Unable to find package %s using mechanism %r.\n -> The reason of failing is \n\n%s\n\n' %(pathsFinder.name, pathsFinder.mechanism, msg) )
-            import traceback
-            from ..logger import debug
-            debug(traceback.format_exc())
+            logger.debug(traceback.format_exc())
         continue
     
     #nothing useful found. raise error
@@ -32,8 +34,3 @@ def search( pathsFinders=[] ):
         )
 
 
-from ..misc._formatstr import indent
-
-from InstallationNotFound import InstallationNotFound
-from PathsFinder import ValidationError
-            

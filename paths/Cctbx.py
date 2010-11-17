@@ -84,9 +84,10 @@ class FromEnvVars(base_FromEnvVars):
             modules= modules)
         
 
-from search import search
+def find():
+    from search import search
 
-fromEnvVars = FromEnvVars( name, description, hints = "CCTBX_ROOT" )
+    fromEnvVars = FromEnvVars( name, description, hints = "CCTBX_ROOT" )
 
-paths = search( [fromEnvVars] )
-
+    paths = search( [fromEnvVars] )
+    return paths

@@ -14,8 +14,8 @@
 
 def get( package ):
     module = __import__( 'utils.paths.%s' % package, {}, {}, [''] )
-    reload( module )
-    return module.paths
+    paths = module.find()
+    return paths
 
 
 from InstallationNotFound import InstallationNotFound

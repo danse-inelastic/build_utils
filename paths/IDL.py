@@ -49,8 +49,9 @@ fromExe = FromExe( name, description,
 toolset  = [fromEnvVars, fromExe,]
 
 
-from search import search
-paths = search(toolset)
-
+def find():
+    from search import search
+    paths = search(toolset)
+    return paths
 
 

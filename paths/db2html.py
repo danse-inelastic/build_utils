@@ -11,6 +11,8 @@ fromEnvVars = PathsFinder( name, description, hints = "DB2HTML_XSL" )
 
 toolset  = [fromEnvVars,]
 
-from search import search
-paths = search(toolset)
 
+def find():
+    from search import search
+    paths = search(toolset)
+    return paths

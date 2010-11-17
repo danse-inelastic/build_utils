@@ -20,7 +20,7 @@ import os
 include = os.path.join( os.path.split( numpy.__file__ )[0],
                         "core", "include" )
 
-from Paths import Paths
-
-paths = Paths( name, description = description, includes = [include] )
-
+def find():
+    from Paths import Paths
+    paths = Paths( name, description = description, includes = [include] )
+    return paths

@@ -50,8 +50,10 @@ if not atlas_lib:
 else: liblist = [atlas_lib]
 
 
-from Paths import Paths
-paths = Paths( name,
-               description = "Linear Algebra PACKage",
-               origin = 'search libatlas.so using infect utils',
-               clibs = liblist )
+def find():
+    from Paths import Paths
+    paths = Paths( name,
+                   description = "Linear Algebra PACKage",
+                   origin = 'search libatlas.so using infect utils',
+                   clibs = liblist )
+    return paths

@@ -96,7 +96,9 @@ class PythonPaths(PathsFinder):
         return ret
         
 
-from search import search
 
-toolset = [PythonPaths(name, description, hints = None)]
-paths = search( toolset )
+
+def find():
+    toolset = [PythonPaths(name, description, hints = None)]
+    from search import search
+    return search(toolset)

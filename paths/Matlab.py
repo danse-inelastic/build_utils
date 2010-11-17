@@ -29,7 +29,8 @@ exe_hints = {"executable": "matlab", "c libraries": "bin/*"}
 fromExe = FromExe( name, description, hints = exe_hints )
 
 
-from search import search
-toolset  = [fromEnvVars, fromExe,]
-paths = search(toolset)
-
+def find():
+    from search import search
+    toolset  = [fromEnvVars, fromExe,]
+    paths = search(toolset)
+    return paths

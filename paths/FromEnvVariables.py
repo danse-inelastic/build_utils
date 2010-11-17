@@ -3,6 +3,7 @@ __author__ = "Jiao Lin"
 
 from PathsFinder import PathsFinder as base
 import os,sys
+from envUtils import getEnv
 
 class PathsFinder(base):
 
@@ -116,12 +117,10 @@ class PathsFinder(base):
         if derivedFrom is None: default = None
         else : default = self.getPaths(derivedFrom).root
         #
-        from envUtils import getEnv
         return  getEnv( rootEnvVar, default, desc )
 
     
     def _getEnv( self, type, desc_format_str ):
-        from envUtils import getEnv
         return getEnv( self.env_variable_names[type],
                        _getDefaultDir( self.root, self.scheme[type]),
                        desc_format_str % type)

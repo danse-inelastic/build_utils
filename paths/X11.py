@@ -12,8 +12,9 @@ fromEnvVars = PathsFinder(name, description, hints = "X11")
 from FromExecutable import PathsFinder 
 fromExe = PathsFinder(name, description, hints = {"executable":"startx"} )
 
-from search import search
-toolset  = [fromEnvVars, fromExe,]
-paths = search(toolset)
 
-
+def find():
+    from search import search
+    toolset  = [fromEnvVars, fromExe,]
+    paths = search(toolset)
+    return paths

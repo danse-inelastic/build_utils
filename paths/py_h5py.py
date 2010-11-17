@@ -21,7 +21,8 @@ except ImportError, err:
 
 import os
 
-from Paths import Paths
 
-paths = Paths( name, description = description)
-
+def find():
+    from Paths import Paths
+    paths = Paths( name, description = description)
+    return paths

@@ -11,6 +11,7 @@ fromEnvVars = PathsFinder( name, description, hints = "DANSE_TEXCOMMON" )
 
 toolset  = [fromEnvVars,]
 
-from search import search
-paths = search(toolset)
-
+def find():
+    from search import search
+    paths = search(toolset)
+    return paths

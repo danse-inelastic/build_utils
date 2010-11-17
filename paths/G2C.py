@@ -41,13 +41,16 @@ def findLib():
     return None,None
 
 
-g2c_lib,g2c_linkname = findLib()
-if not g2c_lib: liblist = []
-else: liblist = [g2c_lib]
+
+def find():
+    g2c_lib,g2c_linkname = findLib()
+    if not g2c_lib: liblist = []
+    else: liblist = [g2c_lib]
 
 
-from Paths import Paths
-paths = Paths( name,
-               description = "Linear Algebra PACKage",
-               origin = 'search libg2c.so using infect utils',
-               clibs = liblist )
+    from Paths import Paths
+    paths = Paths( name,
+                   description = "Linear Algebra PACKage",
+                   origin = 'search libg2c.so using infect utils',
+                   clibs = liblist )
+    return paths

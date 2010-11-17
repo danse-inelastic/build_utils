@@ -13,7 +13,7 @@ def getEnv( env_variable, default, description = None):
     return variable
 
 from shutils import *
-from utils import *
+from _utils import *
 from os import environ
 
 def set_environ(name,value):
