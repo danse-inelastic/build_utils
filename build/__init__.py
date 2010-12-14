@@ -163,7 +163,7 @@ def clean_up( export_root, patterns = [ '.svn', 'CVS', '.pyc' ] ):
 
 
 def prune( path, pattern ):
-    cmd = r'find "%s" -name "%s" -exec rm -rf {} \;' % (
+    cmd = r'find "%s" -name "%s" -print0 | xargs -0 -n 1024 -r rm -rf' % (
         path, pattern )
     print "running %r..." % cmd
     os.system( cmd )
