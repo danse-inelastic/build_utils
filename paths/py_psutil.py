@@ -18,5 +18,6 @@ except ImportError, err:
 
 from Paths import Paths
 
-paths = Paths( name, description = description )
+def find():
+    return Paths( name, description = description )
 
