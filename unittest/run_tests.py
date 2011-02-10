@@ -37,6 +37,7 @@ def _importModule(name):
         import traceback
         tb = traceback.format_exc()
         raise ImportError, 'failed to import %s. traceback:\n%s' % (name, tb)
+    reload(m)
     return m
 
 
@@ -57,7 +58,7 @@ def runtestsInDir(
     testsuitefactory='pysuite',
     testcase='TestCase',
     testrunner = None,
-    skip_long_test = False,
+    skip_long_tests = False,
     ):
     """find all unit tests in the directoy of given path
     (no recursion) and add them in one
@@ -97,14 +98,14 @@ def runtestsInDir(
     #
     import warnings
     for m in testmodules:
-        if hasattr(m, 'standalone'):
+        if skip_long_tests and hasattr(m, 'long_test') and m.long_test:
+            _skipped.append(os.path.join(path, m.__file__))
+            continue
+        if hasattr(m, 'skip') and m.skip:
+            _skipped.append(os.path.join(path, m.__file__))
+            continue
+        if hasattr(m, 'standalone') and m.standalone:
             _standalonetestmodules.append(os.path.join(path, m.__file__))
-            continue
-        if skip_long_test and hasattr(m, 'long_test') and m.long_test:
-            _skipped.append(os.path.join(path, m.__file__))
-            continue
-        if hasattr(m, 'skip'):
-            _skipped.append(os.path.join(path, m.__file__))
             continue
         if hasattr(m, testsuitefactory):
             f = getattr(m, testsuitefactory)
@@ -137,6 +138,9 @@ def runtestsInDir(
         res.skippedTests = _skipped
     else:
         res = None
+    
+    res.origin = path
+    
     return res
 
 
@@ -178,6 +182,8 @@ class Result:
         self.testsRun += result.testsRun
         self.failures += result.failures
         self.errors += result.errors
+        if result.standaloneTests:
+            print result.origin
         self.standaloneTests += result.standaloneTests
         self.skippedTests += result.skippedTests
         return self
@@ -199,13 +205,12 @@ def path_match_patterns(path, patterns):
     return False
 
 
-def runtests(path, exclude_dirs=[], skip_long_test=False):
-    '''run unittests recursively and return a Result instance
-    '''
+ignored_dirs = ['.svn*']
+def iterdirs(path, exclude_dirs=None):
+    '''walk through the tree under path and generate paths of all directories'''
+    exclude_dirs = exclude_dirs or []
+    exclude_dirs += ignored_dirs
     import fnmatch
-    result = Result()
-    import time
-    start = time.time()
     for dirpath, dirnames, filenames in os.walk(path):
         if exclude_dirs and path_match_patterns(dirpath, exclude_dirs):
             continue
@@ -213,11 +218,26 @@ def runtests(path, exclude_dirs=[], skip_long_test=False):
             if exclude_dirs and fn_match_patterns(dir, exclude_dirs):
                 continue
             path1 = os.path.join(dirpath, dir)
-            r = runtestsInDir(path1, skip_long_test=skip_long_test)
-            if r:
-                result += r
+            if os.path.islink(path1):
+                continue
+            yield path1
         continue
-    r = runtestsInDir(path, skip_long_test=skip_long_test)
+    return
+
+
+def runtests(path, exclude_dirs=[], skip_long_tests=False):
+    '''run unittests recursively and return a Result instance
+    '''
+    result = Result()
+    import time
+    start = time.time()
+    for p1 in iterdirs(path, exclude_dirs=exclude_dirs):
+        r = runtestsInDir(p1, skip_long_tests=skip_long_tests)
+        if r:
+            result += r
+        continue
+    
+    r = runtestsInDir(path, skip_long_tests=skip_long_tests)
     stop = time.time()
     timeTaken = stop-start
     if r:
@@ -288,7 +308,7 @@ def printRsult(result, stream = None):
             path, filename = os.path.split(t)
             cmd = 'cd %s && python %s' % (path, filename)
             stream.writeln(' - running %s...' % cmd)
-            p = sp.Popen(cmd, stdout=stream, stderr=stream, shell=True)
+            p = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE, shell=True)
             p.communicate()
             rt = p.wait()
             if rt: failures.append(t)
@@ -299,6 +319,8 @@ def printRsult(result, stream = None):
         stream.writeln('Ran %s standalone tests.' % len(result.standaloneTests))
         if failures:
             stream.writeln('FAILED (errors=%s)' % len(failures))
+            for f in failures:
+                stream.writeln(' - %s' % f)
         else:
             stream.writeln('SUCCEED')
             
@@ -310,6 +332,9 @@ def printRsult(result, stream = None):
         for t in result.skippedTests:
             stream.writeln(' - %s' % t)
             continue
+
+    print '____'
+    print
     return
 
 
