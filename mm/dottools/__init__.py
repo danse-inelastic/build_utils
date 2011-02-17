@@ -20,6 +20,10 @@ def render_header( target, export_root, build_root, config_dir ):
 
 
 def render_dependency( dep ):
+    '''render strings for setting environ vars for the given dependency
+
+    e.g. render_dependency("mpich2")
+    '''
     paths = getpaths( dep )
     from dependencies import render
     return render(paths)
