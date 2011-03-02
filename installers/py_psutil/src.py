@@ -13,15 +13,23 @@
 
 
 name = 'psutil'
+server = 'http://psutil.googlecode.com/files/'
+# http://psutil.googlecode.com/files/psutil-0.2.0.tar.gz
 
 def get( version = None, **kwds ):
-    cmd = 'easy_install --prefix="%s" psutil' % (install_path,)
+    if version is None: version = "0.2.0"
+    cmd = 'python setup.py install --prefix=%s --install-lib=%s/python' % (
+        install_path, install_path)
     def _():
-        return execute(cmd)
+        return install(
+            name, version,
+            server = server,
+            install_commands = [cmd],
+            **kwds )
     return _
     
 
-from utils.installers import install_path, execute
+from utils.installers.src import install, install_path
 
 
 
