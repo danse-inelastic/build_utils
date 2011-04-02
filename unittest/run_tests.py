@@ -19,17 +19,6 @@ given a directory, recursively run all unittests and gather statistics
 import unittest, os, sys
 
 
-def isunittestmodule_bypostfix(postfix='TestCase.py'):
-    """test if a python module is a unittest
-
-    this method assumes that any module ends with the given postfix
-    is a unittest module.
-    """
-    def _(filename):
-        return filename.endswith(postfix)
-    return _
-
-
 def _importModule(name):
     try:
         exec 'import %s as m' % name
@@ -51,10 +40,9 @@ class SilentTestRunner:
         return result
     
 
-
 def runtestsInDir(
     path,
-    isunittestmodule=isunittestmodule_bypostfix(),
+    testmod_filter=None,
     testsuitefactory='pysuite',
     testcase='TestCase',
     testrunner = None,
@@ -84,7 +72,7 @@ def runtestsInDir(
 
     # the modules for unittests
     entries = os.listdir(os.curdir)
-    testmodules = filter(isunittestmodule, entries)
+    testmodules = filter(testmod_filter, entries)
     modnames = [f[:-3] for f in testmodules if f.endswith('.py')]
     testmodules = map(_importModule, modnames)
 
@@ -225,19 +213,34 @@ def iterdirs(path, exclude_dirs=None):
     return
 
 
-def runtests(path, exclude_dirs=[], skip_long_tests=False):
+def runtests(
+    path, exclude_dirs=[], skip_long_tests=False,
+    testmod_filter=None,
+    ):
     '''run unittests recursively and return a Result instance
     '''
+    if not testmod_filter:
+        from testmod_filters import bypostfix
+        testmod_filter = bypostfix()
+    
     result = Result()
     import time
     start = time.time()
     for p1 in iterdirs(path, exclude_dirs=exclude_dirs):
-        r = runtestsInDir(p1, skip_long_tests=skip_long_tests)
+        r = runtestsInDir(
+            p1, 
+            skip_long_tests=skip_long_tests,
+            testmod_filter = testmod_filter,
+            )
         if r:
             result += r
         continue
     
-    r = runtestsInDir(path, skip_long_tests=skip_long_tests)
+    r = runtestsInDir(
+        path,
+        skip_long_tests=skip_long_tests,
+        testmod_filter = testmod_filter,
+        )
     stop = time.time()
     timeTaken = stop-start
     if r:
@@ -261,7 +264,7 @@ class _WritelnDecorator:
         self.write('\n') # text-mode streams translate to \r\n if needed
 
 
-def printRsult(result, stream = None):
+def printResult(result, stream = None):
     if not stream:
         stream = sys.stdout
     stream = _WritelnDecorator(stream)
