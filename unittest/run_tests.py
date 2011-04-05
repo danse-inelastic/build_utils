@@ -102,15 +102,18 @@ def runtestsInDir(
             t = getattr(m, testcase)
             suite1 = unittest.makeSuite(t)
         else:
-            warnings.warn("Don't know how to extract test suite out of %s" % m)
-            continue
+            # try to find all test cases and make a suite
+            suite1 = _createSuiteFromModule(m)
+            warnings.warn("test suite extracted from module %s: %s" % (
+                    m, suite1))
+            # warnings.warn("Don't know how to extract test suite out of %s" % m)
         suite.addTest(suite1)
         continue
 
     if testrunner is None:
         # testrunner = unittest.TextTestRunner(verbosity=0)
         testrunner = SilentTestRunner()
-        
+
     ret = testrunner.run(suite)
 
     _restore()
@@ -131,6 +134,24 @@ def runtestsInDir(
     
     return res
 
+
+def _createSuiteFromModule(mod):
+    testcases = []
+    for item in mod.__dict__.itervalues():
+        if item is unittest.TestCase:
+            continue
+        if item in testcases:
+            continue
+        try:
+            istestcase = issubclass(item, unittest.TestCase)
+        except TypeError:
+            continue
+        if not istestcase:
+            continue
+        testcases.append(item)
+        continue
+    suites = [unittest.makeSuite(tc) for tc in testcases]
+    return unittest.TestSuite(suites)
 
 
 def _formatResult(result):
