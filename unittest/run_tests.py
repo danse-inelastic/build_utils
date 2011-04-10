@@ -333,9 +333,11 @@ def printResult(result, stream = None):
             cmd = 'cd %s && python %s' % (path, filename)
             stream.writeln(' - running %s...' % cmd)
             p = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE, shell=True)
-            p.communicate()
+            out, err = p.communicate()
             rt = p.wait()
-            if rt: failures.append(t)
+            if rt: 
+                failures.append(t)
+                print >> sys.stderr, err
             continue
         result.failures += failures
         stream.writeln()
