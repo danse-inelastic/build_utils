@@ -32,7 +32,7 @@ def buildTestModule(paths):
     from Python import find as findpython
     pythonpaths = findpython()
     incstr = ' '.join(['-I %s' % i for i in paths.includes+pythonpaths.includes])
-    cmd = 'g++ -shared -fpic -o %s -lboost_python %s %s %s' % (
+    cmd = 'g++ -shared -fpic -o %s %s %s %s -lboost_python' % (
         so, libsstr, incstr, src)
     if os.system(cmd):
         raise RuntimeError, "%r failed" % cmd
