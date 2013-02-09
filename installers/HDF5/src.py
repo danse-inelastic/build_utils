@@ -2,7 +2,8 @@ name = 'hdf5'
 
 # the implementation here at this only supports 1.6
 
-pre_server = 'ftp://ftp.hdfgroup.org/HDF5/prev-releases'
+pre_server = 'ftp://ftp.hdfgroup.org/HDF5/releases/hdf5-1.6'
+pre_server = "http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.6"
 current_server = 'ftp://ftp.hdfgroup.org/HDF5/current16/src'
 
 def get( version = None, **kwds ):
