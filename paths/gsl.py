@@ -37,7 +37,11 @@ class PathsFinder(_EnvPFBase):
 fromEnvVars = PathsFinder( name, description, hints = "GSL", validator=validator) 
 
 
-toolset  = [fromEnvVars,]
+from FromExecutable import PathsFinder
+fromExe = PathsFinder( name, description, hints = {"executable": "gsl-config"}, validator=validator)
+
+
+toolset  = [fromEnvVars, fromExe]
 
 
 def find():
