@@ -3,7 +3,7 @@ name = 'gsl'
 def get( version = None, **kwds ):
     if version is None: version = "X.Y.Z"
     major, minor, release = version.split('.')
-    server = pre_server 
+    server = "SERVER_URL" 
     
     cmds = [
         './configure --prefix=%s --enable-cxx' % install_path,
