@@ -27,7 +27,7 @@ def _m(pkgrepo):
     return globals()[type]
 
 
-import svn
+from . import svn, git
 
 
 # version
