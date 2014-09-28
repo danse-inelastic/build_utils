@@ -35,10 +35,11 @@ def run(path, exclude_dirs=None, skip_long_tests=None, log=None):
         rt = process.wait()
         return pickle.load(open(res_pkl(p1)))
     
-    sys.stderr.write('* working ')
+    # sys.stdout.write('* working ')
     for p1 in iterdirs(path, exclude_dirs=exclude_dirs):
-        sys.stdout.write('.')
-        sys.stdout.flush()
+        # sys.stdout.write('.')
+        # sys.stdout.flush()
+        sys.stdout.write('*'+p1+'\n')
         r = run1(p1, skip_long_tests=skip_long_tests)
         if r:
             result += r
