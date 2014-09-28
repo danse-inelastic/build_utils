@@ -18,7 +18,6 @@ given a directory, recursively run all unittests and gather statistics
 
 import unittest, os, sys
 
-
 def _importModule(name):
     try:
         exec 'import %s as m' % name
@@ -31,9 +30,9 @@ def _importModule(name):
 
 
 class SilentTestRunner:
-
+    
     'run tests silently'
-
+    
     def run(self, test):
         result = unittest.TestResult()
         test(result)
@@ -49,9 +48,14 @@ def runtestsInDir(
     skip_long_tests = False,
     ):
     """find all unit tests in the directoy of given path
-    (no recursion) and add them in one
-    test suite, and run the suite
+    (NO recursion) and add them in one
+    test suite, and run the suite.
+    Also gather standalone tests, but don't run them.
     """
+    if not testmod_filter:
+        from .testmod_filters import bypostfix
+        testmod_filter = bypostfix()
+    
     #
     pwd = os.path.abspath(os.curdir)
     path = os.path.abspath(path)
@@ -66,58 +70,66 @@ def runtestsInDir(
         if syspath_restore:
             sys.path = syspath_restore
         os.chdir(pwd)
+        
+    try:
+        # the suite of everything
+        suite = unittest.TestSuite()
 
-    # the suite of everything
-    suite = unittest.TestSuite()
+        # the modules for unittests
+        entries = os.listdir(os.curdir)
+        testmodules = filter(testmod_filter, entries)
+        modnames = [f[:-3] for f in testmodules if f.endswith('.py')]
+        testmodules = map(_importModule, modnames)
 
-    # the modules for unittests
-    entries = os.listdir(os.curdir)
-    testmodules = filter(testmod_filter, entries)
-    modnames = [f[:-3] for f in testmodules if f.endswith('.py')]
-    testmodules = map(_importModule, modnames)
+        if not testmodules:
+            _restore()
+            return
 
-    if not testmodules:
+        #
+        _standalonetestmodules = []
+        _skipped = []
+        #
+        import warnings
+        for m in testmodules:
+            if skip_long_tests and hasattr(m, 'long_test') and m.long_test:
+                _skipped.append(os.path.join(path, m.__file__))
+                continue
+            if hasattr(m, 'skip') and m.skip:
+                _skipped.append(os.path.join(path, m.__file__))
+                continue
+            if hasattr(m, 'standalone') and m.standalone:
+                _standalonetestmodules.append(os.path.join(path, m.__file__))
+                continue
+            if hasattr(m, testsuitefactory):
+                f = getattr(m, testsuitefactory)
+                suite1 = f()
+            elif hasattr(m, testcase):
+                t = getattr(m, testcase)
+                suite1 = unittest.makeSuite(t)
+            else:
+                # try to find all test cases and make a suite
+                suite1 = _createSuiteFromModule(m)
+                warnings.warn("test suite extracted from module %s: %s" % (
+                        m, suite1))
+                # warnings.warn("Don't know how to extract test suite out of %s" % m)
+            suite.addTest(suite1)
+            continue
+
+        if testrunner is None:
+            # testrunner = unittest.TextTestRunner(verbosity=0)
+            testrunner = SilentTestRunner()
+
+        ret = testrunner.run(suite)
+        
+    except:
         _restore()
-        return
-
-    #
-    _standalonetestmodules = []
-    _skipped = []
-    #
-    import warnings
-    for m in testmodules:
-        if skip_long_tests and hasattr(m, 'long_test') and m.long_test:
-            _skipped.append(os.path.join(path, m.__file__))
-            continue
-        if hasattr(m, 'skip') and m.skip:
-            _skipped.append(os.path.join(path, m.__file__))
-            continue
-        if hasattr(m, 'standalone') and m.standalone:
-            _standalonetestmodules.append(os.path.join(path, m.__file__))
-            continue
-        if hasattr(m, testsuitefactory):
-            f = getattr(m, testsuitefactory)
-            suite1 = f()
-        elif hasattr(m, testcase):
-            t = getattr(m, testcase)
-            suite1 = unittest.makeSuite(t)
-        else:
-            # try to find all test cases and make a suite
-            suite1 = _createSuiteFromModule(m)
-            warnings.warn("test suite extracted from module %s: %s" % (
-                    m, suite1))
-            # warnings.warn("Don't know how to extract test suite out of %s" % m)
-        suite.addTest(suite1)
-        continue
-
-    if testrunner is None:
-        # testrunner = unittest.TextTestRunner(verbosity=0)
-        testrunner = SilentTestRunner()
-
-    ret = testrunner.run(suite)
-
+        import traceback
+        res = Result()
+        res.testsRun = 1
+        res.errors = [(path, traceback.format_exc())]
+        return res
+    
     _restore()
-
     if ret.testsRun:
         res = _formatResult(ret)
         res.standaloneTests += _standalonetestmodules
@@ -130,7 +142,8 @@ def runtestsInDir(
     else:
         res = None
     
-    res.origin = path
+    if res:
+        res.origin = path
     
     return res
 
@@ -191,8 +204,8 @@ class Result:
         self.testsRun += result.testsRun
         self.failures += result.failures
         self.errors += result.errors
-        if result.standaloneTests:
-            print result.origin
+        # if result.standaloneTests:
+        #     print result.origin
         self.standaloneTests += result.standaloneTests
         self.skippedTests += result.skippedTests
         return self
@@ -236,14 +249,10 @@ def iterdirs(path, exclude_dirs=None):
 
 def runtests(
     path, exclude_dirs=[], skip_long_tests=False,
-    testmod_filter=None,
+    testmod_filter=None, logfile = None,
     ):
     '''run unittests recursively and return a Result instance
     '''
-    if not testmod_filter:
-        from testmod_filters import bypostfix
-        testmod_filter = bypostfix()
-    
     result = Result()
     import time
     start = time.time()
