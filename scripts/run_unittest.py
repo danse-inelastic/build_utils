@@ -98,14 +98,14 @@ def printResult(result, stream = None):
         stream.writeln('ERROR: %s' % desc)
         stream.writeln('-'*70)
         stream.write(tb)
-        print
+        stream.writeln('')
         
     for desc, tb in result.failures:
         stream.writeln('='*70)
         stream.writeln('FAILED: %s' % desc)
         stream.writeln('-'*70)
         stream.write(tb)
-        print
+        stream.writeln('')
         
     stream.writeln('-' * 70)
     stream.writeln('Ran %s tests in %ss' % (result.testsRun, result.timeTaken))
@@ -131,8 +131,10 @@ def printResult(result, stream = None):
             stream.writeln(' - %s' % t)
             continue
 
-    print '____'
-    print
+    stream.writeln( '____' )
+    stream.writeln( '')
+    if result.errors or result.failures:
+        sys.exit(1)
     return
 
 
