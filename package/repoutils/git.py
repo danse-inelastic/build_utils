@@ -17,7 +17,7 @@
 
 import utils.gitrepoutils as gru
 
-default_repo_server = 'git@github.com:yxqd'
+default_repo_server = 'git@github.com:heetuu'
 
 def getPackageRepository(
     repo, branch, 
