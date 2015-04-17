@@ -9,8 +9,8 @@ def checkoutCmd( server, repo, branch, name=None ):
     if name is None: 
         raise ValueError, "name is None"
     cmd = [ "git clone" ]
+    cmd.append("-b %(branch)s" % locals())
     cmd.append("%(server)s/%(repo)s.git %(name)s" % locals())
-    cmd.append(" && cd %(name)s && git checkout %(branch)s" % locals())
     return ' '.join( cmd )
 
 
