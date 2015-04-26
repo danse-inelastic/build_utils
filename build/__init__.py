@@ -157,7 +157,7 @@ def get_installer( dep ):
     return guess( dep )
 
 
-def clean_up( export_root, patterns = [ '.svn', 'CVS', '.pyc' ] ):
+def clean_up( export_root, patterns = [ '.git', '.svn', 'CVS', '.pyc' ] ):
     for pattern in patterns: prune( export_root, pattern )
     return
 
