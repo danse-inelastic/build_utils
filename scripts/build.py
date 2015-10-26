@@ -20,7 +20,7 @@ def build(export_root):
     sys.path = [pwd] + sys.path
 
     from utils.build import build_release, clean_up
-    rt = build_release( pwd, export_root=export_root)
+    rt = build_release( pwd, export_root=export_root, args=['-s'])
     if rt:
         import sys
         sys.exit(1)
