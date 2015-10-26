@@ -15,6 +15,7 @@
 from utils.unittest.run_tests import \
     Result, iterdirs, runtestsInDir, _WritelnDecorator
 import pickle, os, subprocess as sp, sys, shlex
+import time, datetime
 
 def run(path, exclude_dirs=None, skip_long_tests=None, log=None):
     # run unit tests in each path
@@ -22,7 +23,8 @@ def run(path, exclude_dirs=None, skip_long_tests=None, log=None):
     # harness the outputs.
     # this is different from utils.unittest.run_tests.runtests method
     result = Result()
-    import time
+    print "%s: Recurively run all unit tests" % datetime.date.today()
+    
     start = time.time()
     execpath = sys.argv[0]
     log = log and open(log, 'wt')
@@ -39,12 +41,21 @@ def run(path, exclude_dirs=None, skip_long_tests=None, log=None):
     for p1 in iterdirs(path, exclude_dirs=exclude_dirs):
         # sys.stdout.write('.')
         # sys.stdout.flush()
-        sys.stdout.write('*'+p1+'\n')
+        sys.stdout.write('* running in '+p1)
+        sys.stdout.flush()
+        start1 = time.time()
         r = run1(p1, skip_long_tests=skip_long_tests)
         if r:
             result += r
+        end1 = time.time()
+        elapsed = end1-start1
+        sys.stdout.write(" ... took %s" % secondsToStr(elapsed))
+        if elapsed > 180:
+            sys.stdout.write(" (Long test!!!)")
+        sys.stdout.write("\n")
         continue
     sys.stdout.write('\n')
+    sys.stdout.flush()
     
     r = run1(path, skip_long_tests=skip_long_tests)
     if r: result += r
@@ -55,6 +66,11 @@ def run(path, exclude_dirs=None, skip_long_tests=None, log=None):
     
     result.timeTaken = timeTaken
     return result
+
+
+def secondsToStr(t):
+    rediv = lambda ll,b : list(divmod(ll[0],b)) + ll[1:]
+    return "%d:%02d:%02d.%03d" % tuple(reduce(rediv,[[t*1000,],1000,60,60]))
 
 
 res_pkl = lambda path: os.path.join(path, '.test-res.pkl')
@@ -69,10 +85,21 @@ def run1(path, **kwds):
 
 def runStandAloneTests(tests, log):
     errors = []
+    print "** Standalone tests"
     for t in tests:
+        start1 = time.time()
+        
+        sys.stdout.write("* Running %s" % t); sys.stdout.flush()
         rt, out, err = runStandAloneTest(t, log)
         if rt:
             errors.append((t, err))
+            
+        end1 = time.time()
+        elapsed = end1-start1
+        sys.stdout.write(" ... took %s" % secondsToStr(elapsed))
+        if elapsed > 180:
+            sys.stdout.write(" (Long test!!!)")
+        sys.stdout.write("\n"); sys.stdout.flush()
         continue
     res = Result()
     res.testsRun = len(tests)
