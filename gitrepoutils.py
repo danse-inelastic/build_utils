@@ -4,7 +4,7 @@ import os
 
 
 def checkoutCmd( server, repo, branch, name=None ):
-    '''checkoutCmd( "https://github.com/heetuu", "histogram", "master")
+    '''checkoutCmd( "https://github.com/danse-inelastic", "histogram", "master")
     '''
     if name is None: 
         raise ValueError, "name is None"
@@ -15,7 +15,7 @@ def checkoutCmd( server, repo, branch, name=None ):
 
 
 def repoinfo( repo, branch, server = None, name=None ):
-    server = server or "https://github.com/heetuu"
+    server = server or "https://github.com/danse-inelastic"
     if name is None: 
         raise ValueError, "name is None"
     path = name # path to the checked-out stuff
@@ -25,6 +25,6 @@ def repoinfo( repo, branch, server = None, name=None ):
     
 
 def repourl(repo, branch, server = None):
-    server = server or "https://github.com/heetuu"
+    server = server or "https://github.com/danse-inelastic"
     return "%(server)s/%(repo)s" % locals()
 

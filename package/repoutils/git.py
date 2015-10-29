@@ -17,7 +17,7 @@
 
 import utils.gitrepoutils as gru
 
-default_repo_server = 'https://github.com/heetuu'
+default_repo_server = 'https://github.com/danse-inelastic'
 
 def getPackageRepository(
     repo, branch, 
@@ -35,7 +35,7 @@ Eg.:
  
  >>> getPackageRepository(
          "luban", "trunk", 
-         server = "https://github.com/heetuu", name = "luban")
+         server = "https://github.com/danse-inelastic", name = "luban")
 
 '''
     if server is None: server = default_repo_server
